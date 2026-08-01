@@ -1,5 +1,6 @@
 package io.github.schntgaispock.gastronomicon.api.recipes.components;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -48,27 +49,32 @@ public class GroupRecipeComponent extends RecipeComponent<Set<ItemStack>> {
     public boolean matches(@Nullable ItemStack item) {
         if (item == null) {
             return false;
-        } else {
-            for (final ItemStack groupItem : component) {
-                final SlimefunItem sfGroupItem = SlimefunItem.getByItem(groupItem);
-                if (sfGroupItem != null) {
-                    return sfGroupItem.isItem(item);
-                } else {
-                    return item.isSimilar(groupItem);
+        }
+        for (final ItemStack groupItem : component) {
+            final SlimefunItem sfGroupItem = SlimefunItem.getByItem(groupItem);
+            if (sfGroupItem != null) {
+                if (sfGroupItem.isItem(item)) {
+                    return true;
                 }
+            } else if (item.isSimilar(groupItem)) {
+                return true;
             }
         }
-
         return false;
     }
 
     @Override
     public ItemStack getDisplayItem() {
+        if (component.isEmpty()) {
+            return new ItemStack(Material.AIR);
+        }
         final ItemStack displayitem = component.stream().findFirst().get().clone();
-        final List<Component> lore = displayitem.lore();
+        final List<Component> lore = displayitem.lore() == null ? new ArrayList<>() : new ArrayList<>(displayitem.lore());
         lore.add(Component.text(""));
         for (final ItemStack itemStack : component) {
-            lore.add(Component.text("§8‑ §f").append(itemStack.getItemMeta().displayName()));
+            if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
+                lore.add(Component.text("§8‑ §f").append(itemStack.getItemMeta().displayName()));
+            }
         }
         displayitem.lore(lore);
 
