@@ -556,10 +556,11 @@ public class FoodEffect {
                     if (player.getWorld().getBlockAt(newX, newY - 1, newZ).getType().isSolid() &&
                         player.getWorld().getBlockAt(newX, newY, newZ).isEmpty() &&
                         player.getWorld().getBlockAt(newX, newY + 1, newZ).isEmpty()) {
-                        
-                        final Vector facing = player.getLocation().getDirection();
-                        player.teleport(new Location(player.getWorld(), newX, newY, newZ));
-                        player.getLocation().setDirection(facing);
+
+                        // 保留玩家朝向：原先对 player.getLocation()（克隆对象）setDirection 是空操作，
+                        // 且 teleport 用默认 yaw/pitch=0 会把朝向重置为正南。改为直接传入 yaw/pitch。
+                        player.teleport(new Location(player.getWorld(), newX, newY, newZ,
+                            playerLocation.getYaw(), playerLocation.getPitch()));
 
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT,
                             SoundCategory.PLAYERS, 1.0f, 1.0f);
