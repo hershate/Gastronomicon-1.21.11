@@ -34,8 +34,13 @@ public class RecipeInput {
             Arrays.sort(ingredients, RecipeUtil::compareComponents);
         }
         this.ingredients = new RecipeComponent<?>[9];
-        for (int i = 0; i < Math.min(ingredients.length, 9); i++) {
-            this.ingredients[i] = ingredients[i];
+        // 公开 API 防御：调用方可能传入含 null 或长度<9 的数组，缺失/null 槽位统一转为
+        // EMPTY。否则 hashCode() 会因 ingredient.hashCode() 在 null 上 NPE（注册进
+        // RecipeRegistry 的 HashSet 时触发）。现有内部调用方已预处理，行为不变。
+        for (int i = 0; i < 9; i++) {
+            this.ingredients[i] = (i < ingredients.length && ingredients[i] != null)
+                ? ingredients[i]
+                : RecipeComponent.EMPTY;
         }
 
         this.container = container;
