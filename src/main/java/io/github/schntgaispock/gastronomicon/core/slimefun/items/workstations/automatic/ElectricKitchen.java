@@ -212,7 +212,10 @@ public class ElectricKitchen extends AContainer {
 
         final GastroRecipe recipe = gastroFood.getGastroRecipe();
 
-        int hash = 1;
+        // 哈希必须包含 foodId：若玩家不改变输入、仅更换厨师机器人（不同食物），哈希相同会
+        // 命中旧 Counter（旧食物的槽位映射），却产出新机器人食物 -> 错配方/可被利用
+        // （用便宜食物原料 + 换昂贵食物机器人 -> 产出昂贵食物）。
+        int hash = foodId.hashCode();
         for (int slot : getInputSlots()) {
             hash = hash * 31 + ItemUtil.hashIgnoreAmount(menu.getItemInSlot(slot));
         }
