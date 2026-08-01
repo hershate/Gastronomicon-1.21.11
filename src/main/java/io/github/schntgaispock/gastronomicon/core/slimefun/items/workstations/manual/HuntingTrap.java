@@ -135,6 +135,12 @@ public abstract class HuntingTrap extends SimpleSlimefunItem<BlockUseHandler> {
     }
 
     private void dropCatch(Location l) {
-        l.getWorld().dropItemNaturally(l, getCatch(l));
+        // getCatch 契约允许返回 null（如 biome 不在掉落表时），dropItemNaturally 对 null
+        // 会 NPE。当前由 canCatch 守卫（不触发则不调用），但契约不一致是脆弱点，补判空。
+        final ItemStack catchItem = getCatch(l);
+        if (catchItem == null) {
+            return;
+        }
+        l.getWorld().dropItemNaturally(l, catchItem);
     }
 }
