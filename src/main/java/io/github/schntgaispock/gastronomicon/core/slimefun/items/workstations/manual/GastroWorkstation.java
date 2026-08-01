@@ -26,6 +26,7 @@ import io.github.schntgaispock.gastronomicon.api.recipes.RecipeRegistry;
 import io.github.schntgaispock.gastronomicon.api.recipes.GastroRecipe.RecipeMatchResult;
 import io.github.schntgaispock.gastronomicon.core.slimefun.GastroGroups;
 import io.github.schntgaispock.gastronomicon.core.slimefun.GastroStacks;
+import io.github.schntgaispock.gastronomicon.core.slimefun.items.food.GastroFood;
 import io.github.schntgaispock.gastronomicon.core.slimefun.recipes.GastroRecipeType;
 import io.github.schntgaispock.gastronomicon.util.NumberUtil;
 import io.github.schntgaispock.gastronomicon.util.RecipeUtil;
@@ -198,10 +199,13 @@ public abstract class GastroWorkstation extends MenuBlock {
             // Calculate the crafting result
             final ItemStack output;
             final ItemStack[] toReturn;
+            // 仅 GastroFood（有完美版本的食品）才走熟练度/完美概率分支；其他 SF 产物
+            // （如假设的第三方非食物多产物配方）不应套用完美食物逻辑。原先 sfItem != null
+            // 会把任意 length>1 的 SF 产物配方误当食品。对当前所有配方行为不变。
             final SlimefunItem sfItem = (recipeOutputs.length > 1) ? SlimefunItem.getByItem(recipeOutputs[0]) : null;
-            if (sfItem != null) {
+            if (sfItem instanceof final GastroFood gastroFood) {
                 final AddonConfig playerData = Gastronomicon.getInstance().getPlayerData();
-                final String proficiencyPath = player.getUniqueId() + ".proficiencies." + sfItem.getId();
+                final String proficiencyPath = player.getUniqueId() + ".proficiencies." + gastroFood.getId();
                 final int proficiency = playerData.getInt(proficiencyPath, 0);
 
                 // Add 1 to proficiency
