@@ -70,8 +70,8 @@ public class DynaTechSetup {
         register(60, GastroStacks.TURMERIC.asQuantity(3));
         register(60, GastroStacks.CUMIN_SEEDS.asQuantity(3));
         register(60, GastroStacks.RED_BEANS.asQuantity(3));
-        register(60, GastroStacks.HONEYDEW_MELON_SEEDS.asQuantity(2), GastroStacks.CAULIFLOWER.asQuantity(1));
-        register(60, GastroStacks.CANTALOUPE_SEEDS.asQuantity(2), GastroStacks.CAULIFLOWER.asQuantity(1));
+        register(60, GastroStacks.HONEYDEW_MELON_SEEDS.asQuantity(2), GastroStacks.HONEYDEW_MELON.asQuantity(1));
+        register(60, GastroStacks.CANTALOUPE_SEEDS.asQuantity(2), GastroStacks.CANTALOUPE.asQuantity(1));
         register(60, GastroStacks.SESAME_SEEDS.asQuantity(3));
         register(60, GastroStacks.VANILLA_PLANT.asQuantity(2), GastroStacks.VANILLA_BEANS.asQuantity(2));
         register(90,

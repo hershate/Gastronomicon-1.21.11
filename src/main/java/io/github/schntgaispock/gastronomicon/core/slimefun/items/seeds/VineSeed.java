@@ -28,7 +28,12 @@ public class VineSeed extends AbstractSeed {
 
     @Override
     public List<ItemStack> getHarvestDrops(BlockState e, ItemStack item, boolean brokenByPlayer) {
-        return drops;
+        // 返回克隆副本，避免调用方修改掉落物时污染内部原型（SimpleSeed/CropSeed 同样克隆）。
+        final List<ItemStack> result = new ArrayList<>(drops.size());
+        for (final ItemStack drop : drops) {
+            result.add(drop.clone());
+        }
+        return result;
     }
 
     @Override

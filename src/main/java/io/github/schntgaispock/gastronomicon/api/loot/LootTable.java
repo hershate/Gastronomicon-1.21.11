@@ -35,8 +35,10 @@ public class LootTable<T> {
         @SafeVarargs
         public final LootTableBuilder<T> add(int weight, T... drops) {
             for (final T drop : drops) {
-                weightedDrops.put(drop, weight);
-                totalWeight += weight;
+                // 同一 drop 重复添加时，put 会覆盖旧权重；totalWeight 必须同步抵消旧值，
+                // 否则总和与表中权重之和不一致，会破坏别名法的概率分布。
+                final Integer previous = weightedDrops.put(drop, weight);
+                totalWeight += (previous == null) ? weight : (weight - previous);
             }
             return this;
         }

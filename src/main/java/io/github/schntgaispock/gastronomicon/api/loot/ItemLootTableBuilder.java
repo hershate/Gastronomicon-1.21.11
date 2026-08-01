@@ -19,8 +19,9 @@ public class ItemLootTableBuilder extends LootTableBuilder<ItemStack> {
                 continue;
             }
 
-            weightedDrops.put(drop, weight);
-            totalWeight += weight;
+            // 重复 drop 时 put 覆盖旧权重，totalWeight 需抵消旧值，保持总和一致。
+            final Integer previous = weightedDrops.put(drop, weight);
+            totalWeight += (previous == null) ? weight : (weight - previous);
         }
         return this;
     }
