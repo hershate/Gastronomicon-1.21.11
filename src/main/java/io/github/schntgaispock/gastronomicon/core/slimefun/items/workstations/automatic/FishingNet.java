@@ -84,7 +84,9 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
 
             @Override
             public boolean isSynchronized() {
-                return false;
+                // tick 内读取/写入 BlockStorage、访问 BlockData 与方块库存，
+                // 均非线程安全，必须在主线程执行。
+                return true;
             }
         });
 

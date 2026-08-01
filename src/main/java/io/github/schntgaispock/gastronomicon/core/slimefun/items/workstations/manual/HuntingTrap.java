@@ -1,7 +1,7 @@
 package io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.manual;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -32,7 +32,7 @@ import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 @SuppressWarnings("deprecation")
 public abstract class HuntingTrap extends SimpleSlimefunItem<BlockUseHandler> {
 
-    private final Map<Location, Boolean> triggeredTraps = new HashMap<>();
+    private final Map<Location, Boolean> triggeredTraps = new ConcurrentHashMap<>();
 
     protected HuntingTrap(SlimefunItemStack item, ItemStack[] recipe) {
         super(GastroGroups.TOOLS, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
@@ -67,13 +67,9 @@ public abstract class HuntingTrap extends SimpleSlimefunItem<BlockUseHandler> {
         });
 
         addItemHandler(new BlockTicker() {
-            
-            private boolean active = true;
 
             @Override
             public void tick(Block b, SlimefunItem item, Config config) {
-                if (!active) return;
-
                 if (triggeredTraps.containsKey(b.getLocation())) {
                     if (triggeredTraps.get(b.getLocation())) {
                         b.getWorld().spawnParticle(
@@ -87,13 +83,15 @@ public abstract class HuntingTrap extends SimpleSlimefunItem<BlockUseHandler> {
                             true);
                     }
                 } else {
-                    active = startCatch(b.getLocation());
+                    startCatch(b.getLocation());
                 }
             }
 
             @Override
             public boolean isSynchronized() {
-                return false;
+                // tick 内访问 World(spawnParticle)、BlockStorage 并与主线程上的
+                // 交互/破坏处理器共享 triggeredTraps，必须在主线程执行。
+                return true;
             }
 
         });
