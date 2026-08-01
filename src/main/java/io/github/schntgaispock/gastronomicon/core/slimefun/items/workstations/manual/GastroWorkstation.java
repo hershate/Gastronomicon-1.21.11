@@ -190,10 +190,13 @@ public abstract class GastroWorkstation extends MenuBlock {
                 // Add 1 to proficiency
                 playerData.set(proficiencyPath, proficiency + 1);
 
-                final double perfectProbabilityMultipliers = 1;
-                final double perfectProbability = NumberUtil.clamp(
-                    NumberUtil.clamp(0, proficiency / 864, 0.25) * perfectProbabilityMultipliers,
-                    0, 1);
+                // perfect-food-max-chance 来自 config.yml（默认 0.25）。
+                // 钳制到 [0, 1]，确保 randomRound 仅返回 0/1（否则越界取到产物数组
+                // 后面的"返还物品"槽位）。
+                final double maxChance = NumberUtil.clamp(
+                    Gastronomicon.getInstance().getConfig().getDouble("perfect-food-max-chance", 0.25),
+                    0.0, 1.0);
+                final double perfectProbability = NumberUtil.clamp(proficiency / 864.0, 0.0, maxChance);
 
                 output = recipeOutputs[NumberUtil.randomRound(perfectProbability)];
                 toReturn = Arrays.copyOfRange(recipeOutputs, 2, recipeOutputs.length);
