@@ -14,6 +14,7 @@ import io.github.schntgaispock.gastronomicon.api.recipes.components.RecipeCompon
 import io.github.schntgaispock.gastronomicon.api.recipes.components.RecipeInput;
 import io.github.schntgaispock.gastronomicon.api.recipes.components.SingleRecipeComponent;
 import io.github.schntgaispock.gastronomicon.core.slimefun.recipes.GastroRecipeType;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -175,6 +176,29 @@ public abstract class GastroRecipe {
      */
     public abstract RecipeMatchResult matches(ItemStack[] givenIngredients, List<ItemStack> givenContainers,
         List<ItemStack> givenTools);
+
+    /**
+     * 检查给定工具是否覆盖本配方所需的全部工具。
+     * <p>
+     * 用 {@link SlimefunUtils#isItemSimilar}（SF-id 级，耐久/数量无关）而非 {@code ItemStack.equals}
+     * （meta 含耐久），否则可受损工具（如 IRON_SWORD 材质的厨房刀、IRON_HOE 剥皮器、IRON_SHOVEL
+     * 打蛋器）一旦受损，其 meta 与配方模板（无损）不等，会导致用过/受损的工具无法参与合成。
+     */
+    protected boolean hasAllTools(List<ItemStack> givenTools) {
+        for (final ItemStack tool : getTools()) {
+            boolean found = false;
+            for (final ItemStack givenTool : givenTools) {
+                if (SlimefunUtils.isItemSimilar(givenTool, tool, false)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Returns if a (possibly null) {@link RecipeComponent} matches a (possibly

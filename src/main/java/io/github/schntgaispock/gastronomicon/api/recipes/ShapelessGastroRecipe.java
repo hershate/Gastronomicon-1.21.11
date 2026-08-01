@@ -49,7 +49,8 @@ public class ShapelessGastroRecipe extends GastroRecipe {
             return RecipeMatchResult.NO_MATCH;
         }
 
-        if (!givenTools.containsAll(getTools()))
+        // 工具匹配用 isItemSimilar（SF-id 级，耐久/数量无关），避免可受损工具受损后无法合成。
+        if (!hasAllTools(givenTools))
             return RecipeMatchResult.NO_MATCH;
 
         Arrays.sort(givenIngredients, RecipeUtil::compareItemStacks);

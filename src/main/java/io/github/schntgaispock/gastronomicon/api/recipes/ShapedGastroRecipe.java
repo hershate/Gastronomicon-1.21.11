@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import io.github.schntgaispock.gastronomicon.api.recipes.components.RecipeComponent;
 import io.github.schntgaispock.gastronomicon.api.recipes.components.RecipeInput;
 import io.github.schntgaispock.gastronomicon.core.slimefun.recipes.GastroRecipeType;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import lombok.Getter;
 
 @Getter
@@ -41,7 +42,9 @@ public class ShapedGastroRecipe extends GastroRecipe {
             return RecipeMatchResult.NO_MATCH;
         }
 
-        if (!givenTools.containsAll(getTools()))
+        // 工具匹配用 isItemSimilar（SF-id 级，耐久/数量无关），避免可受损工具（如 IRON_SWORD
+        // 材质的厨房刀）受损后与配方模板（无损）equals 不等而无法合成。
+        if (!hasAllTools(givenTools))
             return RecipeMatchResult.NO_MATCH;
 
         for (int i = 0; i < givenIngredients.length; i++) {
