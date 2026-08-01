@@ -69,14 +69,10 @@ public class RecipeRegistry {
 
     @Nonnull
     public static Set<GroupRecipeComponent> getGroups(@Nonnull ItemStack item) {
+        // 纯读：原先在未命中时会 put 一个空集（读副作用，且以 amount 敏感的 ItemStack 为键
+        // 污染 Map）。改为返回 emptySet 单例，不修改 Map。
         final Set<GroupRecipeComponent> groups = groupsByItemStack.get(item);
-        if (groups == null) {
-            final Set<GroupRecipeComponent> newGroups = new HashSet<>();
-            groupsByItemStack.put(item, newGroups);
-            return Collections.unmodifiableSet(newGroups);
-        } else {
-            return Collections.unmodifiableSet(groups);
-        }
+        return groups == null ? Collections.emptySet() : Collections.unmodifiableSet(groups);
 
     }
 
@@ -87,7 +83,11 @@ public class RecipeRegistry {
 
     @Nonnull
     public static Set<GastroRecipe> getRecipes(@Nonnull GastroRecipeType type) {
-        return Collections.unmodifiableSet(recipesByType.getOrDefault(type, new HashSet<>()));
+        // getOrDefault(type, new HashSet<>()) 的默认实参每次调用都会被求值（即使 type 存在用不到），
+        // 而 getRecipes 在每次合成/每个机器 tick 调用，会造成无谓的空 HashSet 分配（GC 压力）。
+        // 改为 get + null 判断，缺失时返回 emptySet 单例（零分配）。
+        final Set<GastroRecipe> recipes = recipesByType.get(type);
+        return recipes == null ? Collections.emptySet() : Collections.unmodifiableSet(recipes);
     }
 
     @ParametersAreNonnullByDefault
