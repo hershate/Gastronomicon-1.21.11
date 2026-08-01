@@ -7,7 +7,7 @@
 
 - **定位**：粘液科技 (Slimefun) 的食物主题附属插件，新增大量食材、料理、烹饪工作站与作物/种子系统。
 - **基座**：基于 [InfinityLib](https://github.com/mooy1/infinitylib) 的 `AbstractAddon` / `MenuBlock` 开发。
-- **版本**：`1.1.3`（见 [pom.xml](../pom.xml#L8)）。
+- **版本**：`1.1.4`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本，改动见 [release/1.1.4.md](release/1.1.4.md)。
 - **当前主线工作**：将本附属适配至 Minecraft `1.21.11`，参考源码位于 [REF/Slimefun4.1](../REF/Slimefun4.1)（非官方维护分支，版本 `4.9.5`，**只读，不得修改**）。
 
 ## 2. 环境与依赖
@@ -147,11 +147,15 @@ src/main/java/io/github/schntgaispock/gastronomicon/
 
 ## 9. 待确认点（适配/一致性观察）
 
-> 以下为阅读源码时观察到的现象，**未下结论**，待与维护者确认或后续核查：
+> 原记录的 3 个疑点已在 **1.1.4** 修复（详见 [release/1.1.4.md](release/1.1.4.md)）：
 
-1. **`perfect-food-max-chance` 似未被读取**：[GastroWorkstation.java:191-194](../src/main/java/io/github/schntgaispock/gastronomicon/core/slimefun/items/workstations/manual/GastroWorkstation.java#L191-L194) 中完美食物上限 `0.25` 与倍率 `perfectProbabilityMultipliers = 1` 均为硬编码，未见读取 [config.yml](../src/main/resources/config.yml#L12) 的 `perfect-food-max-chance`。需确认这是有意为之还是遗漏。
-2. **MILK_BUCKET 疑似笔误**：[ItemSetup.java:117](../src/main/java/io/github/schntgaispock/gastronomicon/core/setup/ItemSetup.java#L117) `MILK_BUCKET = new ItemStack(Material.WATER_BUCKET)`，赋值为 `WATER_BUCKET` 而非 `Material.MILK_BUCKET`，可能影响所有用到该常量的配方（如奶类汤品、custard）。待确认。
-3. **`GastroFoodBuilder._giveItem` / `giveItem(item, amount)`**：[FoodEffect.java:417-421](../src/main/java/io/github/schntgaispock/gastronomicon/api/food/FoodEffect.java#L417-L421) 中设置了 `clone.setAmount(amount)` 但传入 `_giveItem` 的是原始 `item` 而非 `clone`，疑似 bug。待确认。
+1. ~~**`perfect-food-max-chance` 似未被读取**~~：✅ 已修复。[GastroWorkstation](../src/main/java/io/github/schntgaispock/gastronomicon/core/slimefun/items/workstations/manual/GastroWorkstation.java) 现读取 [config.yml](../src/main/resources/config.yml#L12) 的 `perfect-food-max-chance`（默认 0.25）并钳制到 [0,1]。
+2. ~~**MILK_BUCKET 疑似笔误**~~：✅ 已修复。[ItemSetup.java:117](../src/main/java/io/github/schntgaispock/gastronomicon/core/setup/ItemSetup.java#L117) 已改为 `Material.MILK_BUCKET`。
+3. ~~**`_giveItem` / `giveItem(item, amount)`**~~：✅ 已修复。[FoodEffect](../src/main/java/io/github/schntgaispock/gastronomicon/api/food/FoodEffect.java) 的 amount 传参、完美食物 ×1.5 加成、`move()` 向量原地修改均已修正。
+
+> 1.1.4 另修复了若干审计中发现的严重问题（工作站「幽灵堆」刷物品、命令写错玩家档案、
+> HuntingTrap/FishingNet 异步并发、TreeStructure 启动 NPE 等），完整清单见
+> [release/1.1.4.md](release/1.1.4.md)。
 
 ---
 
