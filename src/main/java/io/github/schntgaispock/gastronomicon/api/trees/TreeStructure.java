@@ -3,6 +3,7 @@ package io.github.schntgaispock.gastronomicon.api.trees;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Location;
@@ -32,16 +33,51 @@ public final class TreeStructure {
 
     public static void loadTrees() {
         final File treePath = new File(TREE_SCHEMATIC_PATH);
-        for (File treeFile : treePath.listFiles()) {
+        if (!treePath.exists()) {
+            treePath.mkdirs();
+        }
+
+        // 解包内置 schematic，保证全新安装时树木结构也可用
+        extractBundledSchematic("GN_BANANA_TREE.json");
+        extractBundledSchematic("GN_LYCHEE_TREE.json");
+
+        final File[] treeFiles = treePath.listFiles();
+        if (treeFiles == null) {
+            Gastronomicon.info("已加载所有树木结构 (目录为空或不可读)");
+            return;
+        }
+        for (File treeFile : treeFiles) {
+            if (!treeFile.isFile()) {
+                continue;
+            }
             try {
                 final TreeStructure tree = JSONObjectMapper.readValue(treeFile, TreeStructure.class);
+                if (tree == null || tree.getSapling() == null) {
+                    continue;
+                }
                 loadedTrees.put(tree.getSapling(), tree);
             } catch (Exception e) {
+                Gastronomicon.log(Level.WARNING, "无法加载树木结构文件: " + treeFile.getName());
                 e.printStackTrace();
             }
         }
 
         Gastronomicon.info("已加载所有树木结构");
+    }
+
+    /**
+     * 若磁盘上不存在该 schematic，则从 jar 内置资源解包。
+     */
+    private static void extractBundledSchematic(String name) {
+        final File target = new File(TREE_SCHEMATIC_PATH, name);
+        if (target.exists()) {
+            return;
+        }
+        try {
+            Gastronomicon.getInstance().saveResource("schematics/" + name, false);
+        } catch (Exception ignored) {
+            // 资源不存在时静默跳过
+        }
     }
 
     private final int[][][] blocks;
@@ -74,30 +110,55 @@ public final class TreeStructure {
 
     public void build(Location l, String sapling) {
         final int[][][] structure = getBlocks();
-        final int root[] = getRoot();
+        final int[] root = getRoot();
+        final String[] palette = getPalette();
+
+        // schematic 来自磁盘（可被任意修改），使用前必须校验，避免越界/异常导致生成中途崩溃
+        if (structure == null || structure.length == 0
+            || structure[0] == null || structure[0].length == 0
+            || structure[0][0] == null || structure[0][0].length == 0
+            || root == null || root.length < 2
+            || palette == null) {
+            Gastronomicon.log(Level.WARNING, "树木结构数据不完整，跳过生成: " + sapling);
+            return;
+        }
+
+        final int rootX = root[0];
+        final int rootZ = root[1];
 
         for (int y = 0; y < structure.length; y++) {
-            for (int z = 0; z < structure[0].length; z++) {
-                for (int x = 0; x < structure[0][0].length; x++) {
-                    int id = structure[y][z][x];
-                    int newX = l.getBlockX() + x - root[0];
+            final int[][] plane = structure[y];
+            if (plane == null) continue;
+            for (int z = 0; z < plane.length; z++) {
+                final int[] row = plane[z];
+                if (row == null) continue;
+                for (int x = 0; x < row.length; x++) {
+                    final int id = row[x];
+                    if (id <= 0) {
+                        continue;
+                    }
+                    int newX = l.getBlockX() + x - rootX;
                     int newY = l.getBlockY() + y;
-                    int newZ = l.getBlockZ() + z - root[1];
-                    switch (id) {
-                        case 0:
+                    int newZ = l.getBlockZ() + z - rootZ;
+                    if (id == 1) {
+                        Block b = l.getWorld().getBlockAt(newX, newY, newZ);
+                        b.setType(Material.PLAYER_HEAD);
+                        if (fruitTexture != null) PlayerHead.setSkin(b, PlayerSkin.fromBase64(fruitTexture), false);
+                        BlockStorage.store(b, getFruit());
+                    } else {
+                        final int paletteIndex = id - 2;
+                        if (paletteIndex < 0 || paletteIndex >= palette.length) {
                             continue;
-                        case 1:
-                            Block b = l.getWorld().getBlockAt(newX, newY, newZ);
-                            b.setType(Material.PLAYER_HEAD);
-                            if (fruitTexture != null) PlayerHead.setSkin(b, PlayerSkin.fromBase64(fruitTexture), false);
-                            BlockStorage.store(b, getFruit());
-                            break;
-                        default:
-                            final String palette = getPalette()[id - 2];
-                            Block b2 = l.getWorld().getBlockAt(newX, newY, newZ);
-                            if (palette.endsWith("LEAVES") && NumberUtil.flip(0.1))
-                                BlockStorage.store(b2, sapling);
-                            b2.setType(Material.valueOf(palette));
+                        }
+                        final String paletteEntry = palette[paletteIndex];
+                        final Block b2 = l.getWorld().getBlockAt(newX, newY, newZ);
+                        if (paletteEntry != null && paletteEntry.endsWith("LEAVES") && NumberUtil.flip(0.1)) {
+                            BlockStorage.store(b2, sapling);
+                        }
+                        final Material material = Material.matchMaterial(paletteEntry);
+                        if (material != null) {
+                            b2.setType(material);
+                        }
                     }
                 }
             }
