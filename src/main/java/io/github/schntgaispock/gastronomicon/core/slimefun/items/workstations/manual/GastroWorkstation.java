@@ -258,7 +258,11 @@ public abstract class GastroWorkstation extends MenuBlock {
                 if (currentlyInOutput == null || currentlyInOutput.getType() == Material.AIR) {
                     inv.setItem(outputSlot, output.clone());
                     break;
-                } else if (RecipeUtil.recipeHash(output) == RecipeUtil.recipeHash(currentlyInOutput)) {
+                } else if (RecipeUtil.recipeHash(output) == RecipeUtil.recipeHash(currentlyInOutput)
+                    && output.isSimilar(currentlyInOutput)) {
+                    // recipeHash 对原版物品仅按 type（忽略 meta），单用它会误把同 type 不同 meta
+                    // 的物品判为可堆叠（如输出普通物品并入玩家放入的附魔同 type 物品 -> meta 变形）。
+                    // 补 isSimilar 精确确认。对当前所有产物（SF 按 id、空容器按 type）行为不变。
                     if (currentlyInOutput.getMaxStackSize() == currentlyInOutput.getAmount()) {
                         continue;
                     } else {
