@@ -165,8 +165,14 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
     }
 
     private boolean getWaterLogged(Block b) {
-        boolean isWaterLogged = b.getBlockData() instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
-        BlockStorage.addBlockInfo(b.getLocation(), "water_logged", String.valueOf(isWaterLogged));
+        final boolean isWaterLogged = b.getBlockData() instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
+        final String value = String.valueOf(isWaterLogged);
+        // 仅在水状态变化时写 BlockStorage。getWaterLogged 每 20 tick 被每个渔网调用一次，
+        // 而水浸状态极少变化，原先每次都 addBlockInfo 产生冗余脏标记/落盘，高密度渔网下
+        // 是无谓 I/O。改为读-比-写。
+        if (!value.equals(BlockStorage.getLocationInfo(b.getLocation(), "water_logged"))) {
+            BlockStorage.addBlockInfo(b.getLocation(), "water_logged", value);
+        }
         return isWaterLogged;
     }
 }
