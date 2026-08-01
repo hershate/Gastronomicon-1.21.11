@@ -58,7 +58,10 @@ public class SimpleGastroFood extends UnplaceableSolid implements RecipeDisplayI
         final ItemStack[] tools = getGastroRecipe().getTools().toArray(ItemStack[]::new);
         final ItemStack container = getGastroRecipe().getInputs().getContainer().getDisplayItem();
 
-        if (CollectionUtil.isEmpty(tools)) {
+        // display 为 18 格：0/1 为表头，2..15 成对存放工具/容器占位，16/17 保留给
+        // topRightDisplayItem 与有序/无序标识。工具最多展示 7 个，超出则截断，避免越界。
+        final int toolCount = Math.min(tools.length, 7);
+        if (toolCount == 0) {
             display[2] = GastroStacks.GUIDE_NONE;
         } else {
             display[2] = tools[0];
@@ -70,7 +73,7 @@ public class SimpleGastroFood extends UnplaceableSolid implements RecipeDisplayI
             display[3] = container;
         }
 
-        for (int i = 1; i < tools.length; i++) {
+        for (int i = 1; i < toolCount; i++) {
             display[2 + 2*i] = tools[i];
             display[3 + 2*i] = new ItemStack(Material.AIR);
         }

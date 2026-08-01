@@ -116,9 +116,10 @@ public class ChunkPDC {
     }
 
     public static void remove(Block b, NamespacedKey key) {
-        final JsonObject obj = PersistentDataAPI.getJsonObject(b.getChunk(), key);
+        final JsonObject obj = PersistentDataAPI.getJsonObject(b.getChunk(), key, new JsonObject());
         if (obj == null) return;
         obj.remove(locationToString(b));
+        PersistentDataAPI.setJsonObject(b.getChunk(), key, obj);
     }
 
 }

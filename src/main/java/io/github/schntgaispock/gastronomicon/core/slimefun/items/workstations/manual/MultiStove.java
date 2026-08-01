@@ -113,9 +113,20 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
         });
 
         menu.addMenuClickHandler(TEMPERATURE_BUTTON_SLOT, (player, slot, item, action) -> {
-            String temp = CommonPatterns.COLON.split(ChatColor.stripColor(item.getItemMeta().getDisplayName()))[1].trim();
-            final Temperature t = Temperature.fromText(temp);
-            changeTemperature(menu, action.isRightClicked() ? t.prev() : t.next());
+            if (item == null || !item.hasItemMeta()) {
+                return false;
+            }
+            final String displayName = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+            final String[] parts = CommonPatterns.COLON.split(displayName, 2);
+            if (parts.length < 2) {
+                return false;
+            }
+            try {
+                final Temperature t = Temperature.fromText(parts[1].trim());
+                changeTemperature(menu, action.isRightClicked() ? t.prev() : t.next());
+            } catch (IllegalArgumentException ignored) {
+                // 显示名解析失败（非法温度文本），忽略本次点击
+            }
             return false;
         });
     }
