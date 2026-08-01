@@ -123,7 +123,7 @@ public class ChefAndroidTrainer extends MenuBlock {
                     final AddonConfig playerData = Gastronomicon.getInstance().getPlayerData();
                     final String proficiencyPath = player.getUniqueId() + ".proficiencies." + id;
                     final int proficiency = playerData.getInt(proficiencyPath, 0);
-                    final int threshold = Gastronomicon.config().getInt("proficiency-threshold");
+                    final int threshold = Gastronomicon.config().getInt("proficiency-threshold", 256);
 
                     if (proficiency < threshold) {
                         Gastronomicon.sendMessage(player, "&e你对这道食物还不够熟练! 需要: " + proficiency + "/" + threshold);

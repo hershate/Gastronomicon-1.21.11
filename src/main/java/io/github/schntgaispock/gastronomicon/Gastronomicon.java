@@ -56,7 +56,7 @@ public class Gastronomicon extends AbstractAddon {
             return;
         }
 
-        if (getConfig().getBoolean("options.auto-update") && getPluginVersion().startsWith("Build")) {
+        if (getConfig().getBoolean("options.auto-update", true) && getPluginVersion().startsWith("Build")) {
             GuizhanUpdater.start(this, getFile(), "SlimegunGuguProject", "Gastronomicon", "master");
         }
 
@@ -94,7 +94,7 @@ public class Gastronomicon extends AbstractAddon {
             warn("需要异域花园物品的配方将被隐藏。");
         }
 
-        if (isPluginEnabled("DynaTech") && !getConfig().getBoolean("disable-dynatech-integration")) {
+        if (isPluginEnabled("DynaTech") && !getConfig().getBoolean("disable-dynatech-integration", true)) {
             try {
                 info("检测到服务器已安装 动力科技(DynaTech)!");
                 info("正在向动力科技添加相关作物...");
