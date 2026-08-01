@@ -11,7 +11,10 @@ import lombok.experimental.UtilityClass;
 public class CollectionUtil {
     
     public static String commaJoin(Object[] list) {
-        StringBuilder text = new StringBuilder();
+        if (list == null || list.length == 0) {
+            return "";
+        }
+        final StringBuilder text = new StringBuilder();
         for (int i = 0; i < list.length - 1; i++) {
             text.append(list[i]).append(", ");
         }
