@@ -1,6 +1,5 @@
 package io.github.schntgaispock.gastronomicon.core.slimefun.items.seeds;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -61,7 +60,11 @@ public class DuplicatingSeed extends AbstractSeed {
 
     @Override
     public List<ItemStack> getHarvestDrops(BlockState e, ItemStack item, boolean brokenByPlayer) {
-        return brokenByPlayer ? new ArrayList<>() : Arrays.asList(getItem().clone());
+        // 原先玩家破坏返回空、非玩家破坏返回 [种子]：但玩家破坏走 AbstractSeed.onPlayerBreak
+        // （dropsOnPlayerBreak 默认 true），会 drops.clear() 清掉原版甘蔗/仙人掌掉落再 addAll(空)，
+        // 导致玩家手动破坏 DuplicatingSeed 时什么也得不到、作物被清空丢失。玩家与非玩家
+        // 破坏都应返回作物（与非玩家保护路径一致）。
+        return Arrays.asList(getItem().clone());
     }
 
 }
