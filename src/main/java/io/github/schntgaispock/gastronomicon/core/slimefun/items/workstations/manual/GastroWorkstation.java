@@ -95,6 +95,8 @@ public abstract class GastroWorkstation extends MenuBlock {
         final Location l = menu.getLocation();
         menu.dropItems(l, getToolSlots());
         menu.dropItems(l, getContainerSlots());
+        // 清除该方块的配方缓存，避免长期运行下放置/破坏工作站导致静态 Map 内存泄漏
+        lastInputHashAndRecipe.remove(l);
     }
 
     protected void onSuccessfulCraft(Block b) {}
@@ -206,18 +208,27 @@ public abstract class GastroWorkstation extends MenuBlock {
             }
 
             // Subtract inputs
+            // 注意：consumeItem / subtract 耗尽物品后只把 amount 置 0，槽位里仍残留
+            // amount=0 的「幽灵」堆。由于配方匹配(isSimilar)与缓存哈希(asOne)均忽略
+            // 数量，幽灵堆仍会被当作有效原料，导致可空耗产出（刷物品）。因此耗尽后
+            // 必须显式清空槽位。
+            final Inventory topInv = player.getOpenInventory().getTopInventory();
             Arrays.stream(getInputSlots()).forEach(s -> {
                 final ItemStack i = menu.getItemInSlot(s);
-                if (i != null)
-                    ItemUtil.consumeItem(i, 1, true).ifPresent(mat -> {
-                        player.getOpenInventory().getTopInventory().setItem(s, new ItemStack(mat));
-                    });
+                if (i != null) {
+                    ItemUtil.consumeItem(i, 1, true).ifPresentOrElse(
+                        mat -> topInv.setItem(s, new ItemStack(mat)),
+                        () -> { if (i.getAmount() <= 0) topInv.setItem(s, null); });
+                }
             });
             for (final int containerSlot : getContainerSlots()) {
                 final ItemStack i = menu.getItemInSlot(containerSlot);
                 if (i != null && hashRecipePair.second() != null
                     && hashRecipePair.second().getInputs().getContainer().matches(i)) {
                     i.subtract();
+                    if (i.getAmount() <= 0) {
+                        topInv.setItem(containerSlot, null);
+                    }
                     break;
                 }
             }

@@ -256,12 +256,19 @@ public class ElectricKitchen extends AContainer {
         for (final var pair : found.entries()) {
             if (pair.first() == null) continue;
 
-            final ItemStack input = menu.getItemInSlot(pair.first());
+            final int slot = pair.first();
+            final ItemStack input = menu.getItemInSlot(slot);
             final ItemStack clone = input.asQuantity(pair.second());
             inputs.add(clone);
             ItemUtil.consumeItem(input, pair.second(), true).ifPresent(mat -> {
                 outputs.add(new ItemStack(mat));
             });
+            // 耗尽后清空槽位：否则残留 amount=0 的「幽灵」堆，而缓存哈希
+            // (hashIgnoreAmount) 与命中复用的 Counter 均忽略数量，会导致
+            // 下一 tick 缓存命中后从幽灵堆空耗产出（刷物品）。
+            if (input.getAmount() <= 0) {
+                menu.replaceExistingItem(slot, null, false);
+            }
         }
 
         final MachineRecipe newRecipe = new MachineRecipe(60 / getSpeed(), inputs.toArray(ItemStack[]::new), outputs.toArray(ItemStack[]::new));
