@@ -13,7 +13,9 @@ public class SimpleSapling extends SlimefunItem {
     public SimpleSapling(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
-        Gastronomicon.getInstance().saveResource("schematics/" + item.getItemId().replace("SAPLING", "TREE") + ".json", true);
+        // 仅在不存在时解包内置 schematic（replace=false），避免每次启动覆盖服务器
+        // 管理员对树木结构文件的自定义修改。
+        Gastronomicon.getInstance().saveResource("schematics/" + item.getItemId().replace("SAPLING", "TREE") + ".json", false);
     }
     
 }

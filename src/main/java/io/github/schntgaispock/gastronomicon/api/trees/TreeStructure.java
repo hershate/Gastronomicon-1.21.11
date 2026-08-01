@@ -37,10 +37,8 @@ public final class TreeStructure {
             treePath.mkdirs();
         }
 
-        // 解包内置 schematic，保证全新安装时树木结构也可用
-        extractBundledSchematic("GN_BANANA_TREE.json");
-        extractBundledSchematic("GN_LYCHEE_TREE.json");
-
+        // schematic 文件由 SimpleSapling 在 ItemSetup 阶段（早于本方法）从 jar 解包，
+        // 此处仅负责读取。目录不存在/不可读时 listFiles() 返回 null，必须判空以免 NPE。
         final File[] treeFiles = treePath.listFiles();
         if (treeFiles == null) {
             Gastronomicon.info("已加载所有树木结构 (目录为空或不可读)");
@@ -63,21 +61,6 @@ public final class TreeStructure {
         }
 
         Gastronomicon.info("已加载所有树木结构");
-    }
-
-    /**
-     * 若磁盘上不存在该 schematic，则从 jar 内置资源解包。
-     */
-    private static void extractBundledSchematic(String name) {
-        final File target = new File(TREE_SCHEMATIC_PATH, name);
-        if (target.exists()) {
-            return;
-        }
-        try {
-            Gastronomicon.getInstance().saveResource("schematics/" + name, false);
-        } catch (Exception ignored) {
-            // 资源不存在时静默跳过
-        }
     }
 
     private final int[][][] blocks;

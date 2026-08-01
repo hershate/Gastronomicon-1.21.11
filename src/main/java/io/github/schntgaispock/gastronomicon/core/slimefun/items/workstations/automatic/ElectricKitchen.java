@@ -2,8 +2,8 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.a
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
@@ -66,7 +66,10 @@ public class ElectricKitchen extends AContainer {
     protected static final int OUTPUT_BORDER = 41;
     protected static final int ANDROID_SLOT = 15;
     protected static final int STATUS_SLOT = 53;
-    private static Map<Location, Pair<Integer, Counter<Integer>>> lastInputHashAndRecipe = new HashMap<>();
+    // AContainer 的 BlockTicker.isSynchronized() 为 false，ElectricKitchen 的 tick 在
+    // Slimefun TickerTask 的异步线程上执行；而 onBlockBreak 在主线程。两者并发访问该缓存，
+    // 必须使用并发安全实现，否则 HashMap 在并发 put/remove 下可能丢条目甚至损坏。
+    private static Map<Location, Pair<Integer, Counter<Integer>>> lastInputHashAndRecipe = new ConcurrentHashMap<>();
 
     private final EnergyNetComponentType energyComponentType = EnergyNetComponentType.CONSUMER;
     private final String machineIdentifier = "GN_ELECTRIC_KITCHEN";
