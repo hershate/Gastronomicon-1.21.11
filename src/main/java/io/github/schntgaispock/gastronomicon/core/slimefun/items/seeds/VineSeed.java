@@ -22,6 +22,10 @@ public class VineSeed extends AbstractSeed {
         drops.add(getItem());
     }
 
+    public VineSeed(SlimefunItemStack item, ItemStack[] gatherSources, SlimefunItemStack crop) {
+        this(item, gatherSources, crop.asOne());
+    }
+
     @Override
     public List<ItemStack> getHarvestDrops(BlockState e, ItemStack item, boolean brokenByPlayer) {
         return drops;

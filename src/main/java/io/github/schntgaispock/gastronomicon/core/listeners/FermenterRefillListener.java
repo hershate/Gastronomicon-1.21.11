@@ -1,6 +1,6 @@
 package io.github.schntgaispock.gastronomicon.core.listeners;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -41,7 +41,7 @@ public class FermenterRefillListener implements Listener {
         if (!Slimefun.getProtectionManager().hasPermission(e.getPlayer(), b, Interaction.INTERACT_BLOCK))
             return;
 
-        final SlimefunItem sfItem = StorageCacheUtils.getSfItem(b.getLocation());
+        final SlimefunItem sfItem = BlockStorage.check(b.getLocation());
         if (sfItem == null || !(sfItem instanceof final Fermenter fermenter))
             return;
 

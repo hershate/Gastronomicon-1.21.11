@@ -1,6 +1,6 @@
 package io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.automatic;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import io.github.schntgaispock.gastronomicon.Gastronomicon;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.schntgaispock.gastronomicon.core.slimefun.GastroGroups;
 import io.github.schntgaispock.gastronomicon.core.slimefun.GastroStacks;
+import io.github.schntgaispock.gastronomicon.util.RecipeUtil;
 import io.github.schntgaispock.gastronomicon.util.collections.CollectionUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -38,7 +39,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
     };
     public static final int[] OUTPUT_BORDER = new int[] { 3, 12, 21 };
     public static final int STATUS_SLOT = 10;
-    public static final ItemStack[] FISH = {
+    public static final ItemStack[] FISH = RecipeUtil.items(
         GastroStacks.RAW_BASS,
         GastroStacks.RAW_CARP,
         GastroStacks.RAW_EEL,
@@ -51,8 +52,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
         new ItemStack(Material.COD),
         new ItemStack(Material.SALMON),
         new ItemStack(Material.PUFFERFISH),
-        new ItemStack(Material.TROPICAL_FISH)
-    };
+        new ItemStack(Material.TROPICAL_FISH));
 
     private final String machineIdentifier = "GN_FISHING_NET";
     private final MachineProcessor<CraftingOperation> machineProcessor = new MachineProcessor<>(this);
@@ -91,7 +91,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
         addItemHandler(new SimpleBlockBreakHandler() {
             @Override
             public void onBlockBreak(Block b) {
-                final BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+                final BlockMenu inv = BlockStorage.getInventory(b.getLocation());
                 if (inv != null)
                     inv.dropItems(b.getLocation(), getOutputSlots());
                 machineProcessor.endOperation(b);
@@ -116,7 +116,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
     }
 
     protected void tick(Block b) {
-        final BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+        final BlockMenu inv = BlockStorage.getInventory(b.getLocation());
         CraftingOperation currentOperation = getMachineProcessor().getOperation(b);
 
         if (currentOperation != null) {
@@ -126,7 +126,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
                     getMachineProcessor().updateProgressBar(inv, STATUS_SLOT, currentOperation);
                     currentOperation.addProgress(1);
                 } else {
-                    inv.replaceExistingItem(STATUS_SLOT, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
+                    inv.replaceExistingItem(STATUS_SLOT, CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE, " "));
                     for (ItemStack output : currentOperation.getResults()) {
                         inv.pushItem(output.clone(), getOutputSlots());
                     }
@@ -148,7 +148,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
         if (Gastronomicon.slimefunTickCount() % 20 == 0) {
             return getWaterLogged(b);
         } else {
-            String waterLogged = StorageCacheUtils.getData(b.getLocation(), "water_logged");
+            String waterLogged = BlockStorage.getLocationInfo(b.getLocation(), "water_logged");
             if (waterLogged == null) {
                 return getWaterLogged(b);
             } else {
@@ -159,7 +159,7 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
 
     private boolean getWaterLogged(Block b) {
         boolean isWaterLogged = b.getBlockData() instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
-        StorageCacheUtils.setData(b.getLocation(), "water_logged", String.valueOf(isWaterLogged));
+        BlockStorage.addBlockInfo(b.getLocation(), "water_logged", String.valueOf(isWaterLogged));
         return isWaterLogged;
     }
 }

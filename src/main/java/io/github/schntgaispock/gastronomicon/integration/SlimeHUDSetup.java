@@ -2,7 +2,7 @@ package io.github.schntgaispock.gastronomicon.integration;
 
 import java.util.List;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.automatic.ElectricKitchen;
@@ -22,7 +22,7 @@ public class SlimeHUDSetup {
     public static void setup() {
         // Electric Kitchen
         SlimeHUD.getHudController().registerCustomHandler(ElectricKitchen.class, request -> {
-            final BlockMenu menu = StorageCacheUtils.getMenu(request.getLocation());
+            final BlockMenu menu = BlockStorage.getInventory(request.getLocation());
             if (menu == null) return "";
             final ItemStack item = menu.getItemInSlot(15);
             if (item == null) return "&7没有机器人";

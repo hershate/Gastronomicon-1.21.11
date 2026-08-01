@@ -45,159 +45,159 @@ public class GastroStacks {
 
     // ---- Guide Only Items ----
 
-    public static final ItemStack GUIDE_ITEM_TOOLS = new CustomItemStack(
+    public static final ItemStack GUIDE_ITEM_TOOLS = CustomItemStack.create(
         Material.IRON_HOE,
         GastroTheme.TOOL.getColor() + "工具");
 
-    public static final ItemStack GUIDE_ITEM_BASIC_MACHINES = new CustomItemStack(
+    public static final ItemStack GUIDE_ITEM_BASIC_MACHINES = CustomItemStack.create(
         Material.CRAFTING_TABLE,
         GastroTheme.MECHANICAL.getColor() + "基础机器");
 
-    public static final ItemStack GUIDE_ITEM_ELECTRIC_MACHINES = new CustomItemStack(
+    public static final ItemStack GUIDE_ITEM_ELECTRIC_MACHINES = CustomItemStack.create(
         Material.FURNACE,
         GastroTheme.ELECTRIC.getColor() + "电力机器");
 
-    public static final ItemStack GUIDE_ITEM_RAW_INGREDIENTS = new CustomItemStack(
+    public static final ItemStack GUIDE_ITEM_RAW_INGREDIENTS = CustomItemStack.create(
         Material.SUGAR,
         GastroTheme.INGREDIENT.getColor() + "原料");
 
-    public static final ItemStack GUIDE_ITEM_FOOD = new CustomItemStack(
+    public static final ItemStack GUIDE_ITEM_FOOD = CustomItemStack.create(
         Material.COOKED_BEEF,
         GastroTheme.REGULAR_FOOD.getColor() + "食物");
 
-    public static final ItemStack GUIDE_ITEM_MAIN = new CustomItemStack(
+    public static final ItemStack GUIDE_ITEM_MAIN = CustomItemStack.create(
         Material.COOKED_BEEF,
         GastroTheme.PERFECT_FOOD.getColor() + "美食家");
 
-    public static final ItemStack GUIDE_RECIPE_BREAK = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_BREAK = CustomItemStack.create(
         Material.IRON_PICKAXE,
         "&b破坏方块",
         "&7破坏指定的方块",
         "&7以获取该物品");
 
-    public static final ItemStack GUIDE_RECIPE_HARVEST = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_HARVEST = CustomItemStack.create(
         Material.IRON_HOE,
         "&b收获作物",
         "&7收获指定的作物",
         "&7以获取该物品");
 
-    public static final ItemStack GUIDE_RECIPE_KILL = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_KILL = CustomItemStack.create(
         Material.IRON_SWORD,
         "&b击杀生物",
         "&7击杀指定的生物",
         "&7有几率掉落该物品");
 
-    public static final ItemStack GUIDE_RECIPE_TRAP = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_TRAP = CustomItemStack.create(
         Material.COBWEB,
         "&b陷阱",
         "&7通过指定的陷阱抓捕",
         "&7以获取该物品");
 
-    public static final ItemStack GUIDE_RECIPE_CULINARY_WORKBENCH = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_CULINARY_WORKBENCH = CustomItemStack.create(
         Material.CRAFTING_TABLE,
         "&b烹饪工作台",
         "&7在烹饪工作台中",
         "&7放入指定的工具与容器",
         "&7来制作该物品");
 
-    public static final ItemStack GUIDE_RECIPE_MULTI_STOVE = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_MULTI_STOVE = CustomItemStack.create(
         Material.BLAST_FURNACE,
         "&b多用炉",
         "&7在多用炉中",
         "&7放入指定的工具与容器",
         "&7来制作该物品");
 
-    public static final ItemStack GUIDE_RECIPE_REFRIGERATOR = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_REFRIGERATOR = CustomItemStack.create(
         Material.IRON_BLOCK,
         "&b冰箱",
         "&7在冰箱中",
         "&7放入指定的工具与容器",
         "&7来制作该物品");
 
-    public static final ItemStack GUIDE_RECIPE_MILL = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_MILL = CustomItemStack.create(
         Material.CAULDRON,
         "&b磨坊",
         "&7在磨坊中",
         "&7放入指定的工具与容器",
         "&7来制作该物品");
 
-    public static final ItemStack GUIDE_RECIPE_FERMENTER = new CustomItemStack(
+    public static final ItemStack GUIDE_RECIPE_FERMENTER = CustomItemStack.create(
         Material.BARREL,
         "&b发酵罐",
         "&7在发酵罐中",
         "&7放入指定的工具与容器",
         "&7来制作该物品");
 
-    public static final ItemStack GUIDE_TOOLS_REQUIRED = new CustomItemStack(
+    public static final ItemStack GUIDE_TOOLS_REQUIRED = CustomItemStack.create(
         Material.BLACK_STAINED_GLASS_PANE,
         ChatColor.of("#999999") + "所需工具");
 
-    public static final ItemStack GUIDE_CONTAINER_REQUIRED = new CustomItemStack(
+    public static final ItemStack GUIDE_CONTAINER_REQUIRED = CustomItemStack.create(
         Material.PURPLE_STAINED_GLASS_PANE,
         "&5所需容器");
 
-    public static final ItemStack GUIDE_BIOME_REQUIRED = new CustomItemStack(
+    public static final ItemStack GUIDE_BIOME_REQUIRED = CustomItemStack.create(
         Material.LIME_STAINED_GLASS_PANE,
         "&a所需生物群系");
 
-    public static final ItemStack GUIDE_CLIMATE_REQUIRED = new CustomItemStack(
+    public static final ItemStack GUIDE_CLIMATE_REQUIRED = CustomItemStack.create(
         Material.LIGHT_BLUE_STAINED_GLASS_PANE,
         "&b所需环境");
 
-    public static final ItemStack GUIDE_NONE = new CustomItemStack(
+    public static final ItemStack GUIDE_NONE = CustomItemStack.create(
         Material.BARRIER,
         "&c无");
 
-    public static final ItemStack GUIDE_KILL_GOAT = new CustomItemStack(
+    public static final ItemStack GUIDE_KILL_GOAT = CustomItemStack.create(
         Material.GOAT_SPAWN_EGG,
         "&f山羊");
 
-    public static final ItemStack GUIDE_KILL_SALMON = new CustomItemStack(
+    public static final ItemStack GUIDE_KILL_SALMON = CustomItemStack.create(
         Material.SALMON_SPAWN_EGG,
         "&f鲑鱼");
 
-    public static final ItemStack GUIDE_KILL_GUARDIAN = new CustomItemStack(
+    public static final ItemStack GUIDE_KILL_GUARDIAN = CustomItemStack.create(
         Material.GUARDIAN_SPAWN_EGG,
         "&f守卫者");
 
-    public static final ItemStack GUIDE_KILL_SQUID = new CustomItemStack(
+    public static final ItemStack GUIDE_KILL_SQUID = CustomItemStack.create(
         Material.SQUID_SPAWN_EGG,
         "&f鱿鱼");
 
     // ---- Menu Only ----
 
-    public static final ItemStack MENU_BACKGROUND_ITEM = new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, "");
-    public static final ItemStack MENU_INGREDIENT_BORDER = new CustomItemStack(Material.BLUE_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_BACKGROUND_ITEM = CustomItemStack.create(Material.GRAY_STAINED_GLASS_PANE, "");
+    public static final ItemStack MENU_INGREDIENT_BORDER = CustomItemStack.create(Material.BLUE_STAINED_GLASS_PANE,
         "&9原料");
-    public static final ItemStack MENU_CONTAINER_BORDER = new CustomItemStack(Material.PURPLE_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_CONTAINER_BORDER = CustomItemStack.create(Material.PURPLE_STAINED_GLASS_PANE,
         "&5容器");
-    public static final ItemStack MENU_TOOL_BORDER = new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_TOOL_BORDER = CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE,
         ChatColor.of("#999999") + "工具");
-    public static final ItemStack MENU_OUTPUT_BORDER = new CustomItemStack(Material.ORANGE_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_OUTPUT_BORDER = CustomItemStack.create(Material.ORANGE_STAINED_GLASS_PANE,
         "&6输出");
-    public static final ItemStack MENU_CRAFT_BUTTON = new CustomItemStack(Material.LIME_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_CRAFT_BUTTON = CustomItemStack.create(Material.LIME_STAINED_GLASS_PANE,
         "&a点击合成");
     public static final ItemStack MENU_PROGRESS_BAR = new ItemStack(Material.FLINT_AND_STEEL);
-    public static final ItemStack MENU_FOOD_BORDER = new CustomItemStack(Material.CYAN_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_FOOD_BORDER = CustomItemStack.create(Material.CYAN_STAINED_GLASS_PANE,
         "&f食物栏", "", "&7在下方放入食物");
-    public static final ItemStack MENU_TRAIN_BUTTON = new CustomItemStack(Material.LIME_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_TRAIN_BUTTON = CustomItemStack.create(Material.LIME_STAINED_GLASS_PANE,
         "&a点击训练");
-    public static final ItemStack MENU_INPUT_BORDER = new CustomItemStack(Material.BLUE_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_INPUT_BORDER = CustomItemStack.create(Material.BLUE_STAINED_GLASS_PANE,
         "&9输入");
-    public static final ItemStack MENU_ANDROID_BORDER = new CustomItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_ANDROID_BORDER = CustomItemStack.create(Material.LIGHT_BLUE_STAINED_GLASS_PANE,
         GastroTheme.ELECTRIC.getColor() + "厨师机器人");
-    public static final ItemStack MENU_NOT_ENOUGH_ENERGY = new CustomItemStack(Material.RED_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_NOT_ENOUGH_ENERGY = CustomItemStack.create(Material.RED_STAINED_GLASS_PANE,
         "&c能量不足");
-    public static final ItemStack MENU_NO_ANDROID = new CustomItemStack(Material.RED_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_NO_ANDROID = CustomItemStack.create(Material.RED_STAINED_GLASS_PANE,
         "&c没有机器人");
-    public static final ItemStack MENU_INCORRECT_RECIPE = new CustomItemStack(Material.RED_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_INCORRECT_RECIPE = CustomItemStack.create(Material.RED_STAINED_GLASS_PANE,
         "&c配方错误");
-    public static final ItemStack MENU_NOT_WATERLOGGED = new CustomItemStack(Material.RED_STAINED_GLASS_PANE,
+    public static final ItemStack MENU_NOT_WATERLOGGED = CustomItemStack.create(Material.RED_STAINED_GLASS_PANE,
         "&c不在水中");
 
     // ---- Dummy ----
 
-    public static final ItemStack DUMMY_FISHING_NET = new CustomItemStack(Material.IRON_BARS,
+    public static final ItemStack DUMMY_FISHING_NET = CustomItemStack.create(Material.IRON_BARS,
         GastroTheme.ELECTRIC.getColor() + "捕鱼网");
 
     // ---- Tools ----

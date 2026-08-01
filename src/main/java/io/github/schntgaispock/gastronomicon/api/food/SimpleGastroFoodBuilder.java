@@ -84,6 +84,8 @@ public class SimpleGastroFoodBuilder {
         for (int i = 0; i < Math.min(ingredients.length, 9); i++) {
             if (ingredients[i] instanceof final ItemStack stack) {
                 this.ingredients[i] = new SingleRecipeComponent(stack);
+            } else if (ingredients[i] instanceof final SlimefunItemStack sfis) {
+                this.ingredients[i] = new SingleRecipeComponent(sfis.asOne());
             } else if (ingredients[i] instanceof final RecipeComponent<?> comp) {
                 this.ingredients[i] = comp;
             } else if (ingredients[i] instanceof final Material mat) {
@@ -120,6 +122,11 @@ public class SimpleGastroFoodBuilder {
         return this;
     }
 
+    public SimpleGastroFoodBuilder container(@Nonnull SlimefunItemStack container) {
+        this.container = new SingleRecipeComponent(container.asOne());
+        return this;
+    }
+
     public SimpleGastroFoodBuilder container(@Nonnull RecipeComponent<?> container) {
         this.container = container;
         return this;
@@ -127,6 +134,12 @@ public class SimpleGastroFoodBuilder {
 
     public SimpleGastroFoodBuilder tools(@Nonnull ItemStack... tools) {
         this.tools = Set.of(tools);
+        return this;
+    }
+
+    public SimpleGastroFoodBuilder tools(@Nonnull SlimefunItemStack... tools) {
+        this.tools = Arrays.stream(tools).filter(java.util.Objects::nonNull)
+            .map(SlimefunItemStack::asOne).collect(java.util.stream.Collectors.toSet());
         return this;
     }
 

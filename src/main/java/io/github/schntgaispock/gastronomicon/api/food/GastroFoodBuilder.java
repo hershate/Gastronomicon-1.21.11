@@ -24,6 +24,7 @@ import io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.ma
 import io.github.schntgaispock.gastronomicon.core.slimefun.recipes.GastroRecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.researches.Research;
 import io.github.thebusybiscuit.slimefun4.libraries.commons.lang.Validate;
 import lombok.ToString;
@@ -75,6 +76,8 @@ public class GastroFoodBuilder extends SimpleGastroFoodBuilder {
         for (int i = 0; i < Math.min(ingredients.length, 9); i++) {
             if (ingredients[i] instanceof final ItemStack stack) {
                 this.ingredients[i] = new SingleRecipeComponent(stack);
+            } else if (ingredients[i] instanceof final SlimefunItemStack sfis) {
+                this.ingredients[i] = new SingleRecipeComponent(sfis.asOne());
             } else if (ingredients[i] instanceof final RecipeComponent<?> comp) {
                 this.ingredients[i] = comp;
             } else if (ingredients[i] instanceof final Material mat) {
@@ -111,6 +114,11 @@ public class GastroFoodBuilder extends SimpleGastroFoodBuilder {
         return this;
     }
 
+    public GastroFoodBuilder container(@Nonnull SlimefunItemStack stack) {
+        this.container = new SingleRecipeComponent(stack.asOne());
+        return this;
+    }
+
     public GastroFoodBuilder container(@Nonnull RecipeComponent<?> comp) {
         this.container = comp;
         return this;
@@ -118,6 +126,12 @@ public class GastroFoodBuilder extends SimpleGastroFoodBuilder {
 
     public GastroFoodBuilder tools(@Nonnull ItemStack... tools) {
         this.tools = Set.of(tools);
+        return this;
+    }
+
+    public GastroFoodBuilder tools(@Nonnull SlimefunItemStack... tools) {
+        this.tools = Arrays.stream(tools).filter(java.util.Objects::nonNull)
+            .map(SlimefunItemStack::asOne).collect(java.util.stream.Collectors.toSet());
         return this;
     }
 

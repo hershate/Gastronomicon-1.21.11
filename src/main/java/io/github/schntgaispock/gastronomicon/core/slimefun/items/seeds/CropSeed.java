@@ -40,8 +40,14 @@ public class CropSeed extends SimpleSeed {
     }
 
     @ParametersAreNonnullByDefault
+    public CropSeed(SlimefunItemStack item, Material displayBlock, ItemStack[] gatherSources,
+            SlimefunItemStack grownCrop) {
+        this(item, displayBlock, gatherSources, grownCrop.asOne());
+    }
+
+    @ParametersAreNonnullByDefault
     public CropSeed(SlimefunItemStack item, Material displayBlock, SlimefunItemStack harvestSource) {
-        this(item, displayBlock, RecipeUtil.singleCenter(harvestSource), harvestSource);
+        this(item, displayBlock, RecipeUtil.singleCenter(harvestSource), harvestSource.asOne());
     }
 
     @Override

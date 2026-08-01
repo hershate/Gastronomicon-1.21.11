@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.schntgaispock.gastronomicon.core.slimefun.GastroStacks;
+import io.github.schntgaispock.gastronomicon.util.RecipeUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
 
@@ -22,9 +23,9 @@ public class DynaTechSetup {
             final Method register = gc.getClass().getMethod(
                 "registerRecipe", int.class, ItemStack[].class, ItemStack[].class);
 
-            register.invoke(gc, seconds, new ItemStack[] { outputs[0].asOne() }, outputs);
+            register.invoke(gc, seconds, RecipeUtil.items( outputs[0].asOne() ), outputs);
             register.invoke(gc2, seconds,
-            new ItemStack[] { outputs[0].asOne() },
+            RecipeUtil.items( outputs[0].asOne() ),
             Arrays.stream(outputs).map(itemStack -> itemStack.asQuantity(itemStack.getAmount() * 3))
                 .toArray(ItemStack[]::new));
             

@@ -27,7 +27,7 @@ public class GastroFood extends SimpleGastroFood {
 
     private static final @Getter Set<String> gastroFoodIds = new HashSet<>();
 
-    private final @Getter FoodItemStack item;
+    private final FoodItemStack item;
     private final @Getter boolean perfect;
     private final ItemStack recipeDisplayOutput;
 
@@ -38,6 +38,16 @@ public class GastroFood extends SimpleGastroFood {
         this.item = item;
         this.perfect = perfect;
         this.recipeDisplayOutput = recipeDisplayOutput;
+    }
+
+    /**
+     * Returns the {@link FoodItemStack} of this GastroFood.
+     * <p>
+     * Note: this is intentionally not named {@code getItem()} to avoid clashing
+     * with {@link SlimefunItem#getItem()}, which returns an {@link ItemStack}.
+     */
+    public FoodItemStack getGastroItem() {
+        return item;
     }
 
     @Override
@@ -69,11 +79,11 @@ public class GastroFood extends SimpleGastroFood {
             }
 
             final Player p = e.getPlayer();
-            for (FoodEffect effect : food.getItem().getEffects()) {
+            for (FoodEffect effect : food.getGastroItem().getEffects()) {
                 effect.apply(p, food.isPerfect());
             }
-            p.setFoodLevel(Math.min(p.getFoodLevel() + food.getItem().getHunger(), 20));
-            p.setSaturation((float) Math.min(p.getSaturation() + food.getItem().getSaturation(),
+            p.setFoodLevel(Math.min(p.getFoodLevel() + food.getGastroItem().getHunger(), 20));
+            p.setSaturation((float) Math.min(p.getSaturation() + food.getGastroItem().getSaturation(),
                 p.getFoodLevel()));
             if (getGastroRecipe().getInputs().getContainer().getComponent() instanceof final ItemStack stack) {
                 p.getInventory().addItem(stack); // It should always be an itemstack anyways

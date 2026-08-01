@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.guizhanss.guizhanlib.slimefuncn.utils.NewBlockStorageUtil;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -90,13 +90,13 @@ public final class TreeStructure {
                             Block b = l.getWorld().getBlockAt(newX, newY, newZ);
                             b.setType(Material.PLAYER_HEAD);
                             if (fruitTexture != null) PlayerHead.setSkin(b, PlayerSkin.fromBase64(fruitTexture), false);
-                            NewBlockStorageUtil.createBlock(b, getFruit());
+                            BlockStorage.store(b, getFruit());
                             break;
                         default:
                             final String palette = getPalette()[id - 2];
                             Block b2 = l.getWorld().getBlockAt(newX, newY, newZ);
                             if (palette.endsWith("LEAVES") && NumberUtil.flip(0.1))
-                                NewBlockStorageUtil.createBlock(b2, sapling);
+                                BlockStorage.store(b2, sapling);
                             b2.setType(Material.valueOf(palette));
                     }
                 }

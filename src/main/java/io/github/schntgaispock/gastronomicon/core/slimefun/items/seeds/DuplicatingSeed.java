@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
@@ -47,7 +47,7 @@ public class DuplicatingSeed extends AbstractSeed {
             public void onPlayerPlace(BlockPlaceEvent e) {
                 if (e.getBlock().getState().getLightLevel() <= 7) {
                     e.setCancelled(true);
-                    Slimefun.getDatabaseManager().getBlockDataController().removeBlock(e.getBlock().getLocation());
+                    BlockStorage.clearBlockInfo(e.getBlock().getLocation());
                 }
             }
         });

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -58,7 +58,7 @@ public class ChefAndroidTrainer extends MenuBlock {
 
             @Override
             public void onBlockBreak(Block b) {
-                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+                BlockMenu inv = BlockStorage.getInventory(b.getLocation());
 
                 if (inv != null) {
                     inv.dropItems(b.getLocation(), getInputSlots());

@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.schntgaispock.gastronomicon.util.item.ItemUtil;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import lombok.Getter;
 
 /**
@@ -31,9 +30,11 @@ public class SingleRecipeComponent extends RecipeComponent<ItemStack> {
     public boolean matches(@Nullable ItemStack item) {
         if (item == null) {
             return component.getType() == Material.AIR;
-        } else if (component instanceof final SlimefunItemStack sfStack) {
-            return SlimefunItem.getById(sfStack.getItemId()).isItem(item);
         } else {
+            final SlimefunItem sfComponent = SlimefunItem.getByItem(component);
+            if (sfComponent != null) {
+                return sfComponent.isItem(item);
+            }
             return item.isSimilar(component);
         }
     }

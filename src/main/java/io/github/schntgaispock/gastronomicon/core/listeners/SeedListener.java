@@ -2,9 +2,7 @@ package io.github.schntgaispock.gastronomicon.core.listeners;
 
 import javax.annotation.Nonnull;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import net.guizhanss.guizhanlib.slimefuncn.utils.NewBlockStorageUtil;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +34,7 @@ public class SeedListener implements Listener {
     public void onCropGrow(@Nonnull BlockGrowEvent e) {
         switch (e.getNewState().getType()) {
             case SUGAR_CANE, CACTUS:
-                assignGastroSeed(StorageCacheUtils.getSfItem(e.getBlock().getRelative(BlockFace.DOWN).getLocation()),
+                assignGastroSeed(BlockStorage.check(e.getBlock().getRelative(BlockFace.DOWN).getLocation()),
                     e.getNewState().getLocation());
                 break;
 
@@ -55,7 +53,7 @@ public class SeedListener implements Listener {
                         final Directional stemData = (Directional) checking.getBlockData();
 
                         if (stemData.getFacing().getOppositeFace().equals(face)) {
-                            assignGastroSeed(StorageCacheUtils.getSfItem(checking.getLocation()), e.getNewState().getLocation());
+                            assignGastroSeed(BlockStorage.check(checking.getLocation()), e.getNewState().getLocation());
                             break;
                         }
                     }
@@ -71,7 +69,7 @@ public class SeedListener implements Listener {
     public void onVineGrow(BlockSpreadEvent e) {
         switch (e.getNewState().getType()) {
             case VINE:
-                assignGastroSeed(StorageCacheUtils.getSfItem(e.getSource().getLocation()),
+                assignGastroSeed(BlockStorage.check(e.getSource().getLocation()),
                     e.getNewState().getLocation());
                 break;
 
@@ -89,7 +87,7 @@ public class SeedListener implements Listener {
             e.setWillDrop(false);
             seed.getHarvestDrops(b.getState(), new ItemStack(Material.AIR), false).forEach(
                 drop -> b.getWorld().dropItemNaturally(b.getLocation(), drop));
-            Slimefun.getDatabaseManager().getBlockDataController().removeBlock(b.getLocation());
+            BlockStorage.clearBlockInfo(b.getLocation());
         }
     }
 
@@ -104,7 +102,7 @@ public class SeedListener implements Listener {
             seed.getHarvestDrops(e.getBlock().getState(), new ItemStack(Material.AIR), false).forEach(
                 drop -> e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), drop));
             b.setType(Material.AIR);
-            Slimefun.getDatabaseManager().getBlockDataController().removeBlock(b.getLocation());
+            BlockStorage.clearBlockInfo(b.getLocation());
         }
     }
 
@@ -120,9 +118,9 @@ public class SeedListener implements Listener {
             return;
 
         if (item instanceof DuplicatingSeed || item instanceof VineSeed) {
-            NewBlockStorageUtil.createBlock(l, item.getId());
+            BlockStorage.store(l.getBlock(), item.getId());
         } else if (item instanceof final FruitingSeed fgs) {
-            NewBlockStorageUtil.createBlock(l, fgs.getFruitingBody().getId());
+            BlockStorage.store(l.getBlock(), fgs.getFruitingBody().getId());
         }
     }
 
@@ -136,7 +134,7 @@ public class SeedListener implements Listener {
                 return null;
         }
 
-        final SlimefunItem item = StorageCacheUtils.getSfItem(cropBlock.getLocation());
+        final SlimefunItem item = BlockStorage.check(cropBlock.getLocation());
         if (item == null) {
             return null;
         }

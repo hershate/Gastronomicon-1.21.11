@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -142,7 +142,7 @@ public class ElectricKitchen extends AContainer {
 
             @Override
             public void onBlockBreak(Block b) {
-                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+                BlockMenu inv = BlockStorage.getInventory(b.getLocation());
 
                 if (inv != null) {
                     inv.dropItems(b.getLocation(), getInputSlots());
@@ -274,7 +274,7 @@ public class ElectricKitchen extends AContainer {
      */
     @Override
     protected void tick(Block b) {
-        final BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+        final BlockMenu inv = BlockStorage.getInventory(b.getLocation());
         CraftingOperation currentOperation = getMachineProcessor().getOperation(b);
 
         if (currentOperation != null) {
@@ -283,7 +283,7 @@ public class ElectricKitchen extends AContainer {
                     getMachineProcessor().updateProgressBar(inv, STATUS_SLOT, currentOperation);
                     currentOperation.addProgress(1);
                 } else {
-                    inv.replaceExistingItem(STATUS_SLOT, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
+                    inv.replaceExistingItem(STATUS_SLOT, CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE, " "));
 
                     for (ItemStack output : currentOperation.getResults()) {
                         inv.pushItem(output.clone(), getOutputSlots());

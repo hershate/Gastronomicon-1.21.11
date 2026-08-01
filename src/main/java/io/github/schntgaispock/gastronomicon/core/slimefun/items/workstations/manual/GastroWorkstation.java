@@ -31,6 +31,7 @@ import io.github.schntgaispock.gastronomicon.util.NumberUtil;
 import io.github.schntgaispock.gastronomicon.util.RecipeUtil;
 import io.github.schntgaispock.gastronomicon.util.collections.Pair;
 import io.github.schntgaispock.gastronomicon.util.item.ItemUtil;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -180,9 +181,10 @@ public abstract class GastroWorkstation extends MenuBlock {
             // Calculate the crafting result
             final ItemStack output;
             final ItemStack[] toReturn;
-            if (recipeOutputs.length > 1 && recipeOutputs[0] instanceof final SlimefunItemStack sfItem) {
+            final SlimefunItem sfItem = (recipeOutputs.length > 1) ? SlimefunItem.getByItem(recipeOutputs[0]) : null;
+            if (sfItem != null) {
                 final AddonConfig playerData = Gastronomicon.getInstance().getPlayerData();
-                final String proficiencyPath = player.getUniqueId() + ".proficiencies." + sfItem.getItemId();
+                final String proficiencyPath = player.getUniqueId() + ".proficiencies." + sfItem.getId();
                 final int proficiency = playerData.getInt(proficiencyPath, 0);
 
                 // Add 1 to proficiency

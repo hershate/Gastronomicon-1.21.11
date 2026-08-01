@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -66,18 +66,18 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
         }
     }
 
-    public static final ItemStack TEMPERATURE_BUTTON_LOW = new CustomItemStack(
+    public static final ItemStack TEMPERATURE_BUTTON_LOW = CustomItemStack.create(
         Material.YELLOW_STAINED_GLASS_PANE,
         "&7温度: &e低",
         "",
         "&b左键点击 &7提高温度");
-    public static final ItemStack TEMPERATURE_BUTTON_MEDIUM = new CustomItemStack(
+    public static final ItemStack TEMPERATURE_BUTTON_MEDIUM = CustomItemStack.create(
         Material.ORANGE_STAINED_GLASS_PANE,
         "&7温度: &6中",
         "",
         "&b左键点击 &7提高温度",
         "&b右键点击 &7降低温度");
-    public static final ItemStack TEMPERATURE_BUTTON_HIGH = new CustomItemStack(
+    public static final ItemStack TEMPERATURE_BUTTON_HIGH = CustomItemStack.create(
         Material.RED_STAINED_GLASS_PANE,
         "&7温度: &c高",
         "",
@@ -107,7 +107,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
         super.onNewInstance(menu, b);
 
         menu.addMenuOpeningHandler(player -> {
-            final String temp = StorageCacheUtils.getData(menu.getLocation(), TEMPERATURE_KEY);
+            final String temp = BlockStorage.getLocationInfo(menu.getLocation(), TEMPERATURE_KEY);
             menu.replaceExistingItem(TEMPERATURE_BUTTON_SLOT,
                 temp == null ? TEMPERATURE_BUTTON_LOW : Temperature.valueOf(temp).getItem(), false);
         });
@@ -125,7 +125,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
             return;
         }
         menu.replaceExistingItem(TEMPERATURE_BUTTON_SLOT, t.getItem());
-        StorageCacheUtils.setData(menu.getLocation(), TEMPERATURE_KEY, t.name());
+        BlockStorage.addBlockInfo(menu.getLocation(), TEMPERATURE_KEY, t.name());
     }
 
     @Override

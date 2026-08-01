@@ -11,7 +11,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
@@ -51,8 +50,9 @@ public class GroupRecipeComponent extends RecipeComponent<Set<ItemStack>> {
             return false;
         } else {
             for (final ItemStack groupItem : component) {
-                if (groupItem instanceof final SlimefunItemStack sfStack) {
-                    return SlimefunItem.getById(sfStack.getItemId()).isItem(item);
+                final SlimefunItem sfGroupItem = SlimefunItem.getByItem(groupItem);
+                if (sfGroupItem != null) {
+                    return sfGroupItem.isItem(item);
                 } else {
                     return item.isSimilar(groupItem);
                 }

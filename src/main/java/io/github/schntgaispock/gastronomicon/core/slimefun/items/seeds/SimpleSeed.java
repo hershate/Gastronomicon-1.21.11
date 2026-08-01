@@ -9,7 +9,7 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import lombok.Getter;
-import net.guizhanss.guizhanlib.slimefuncn.utils.NewBlockStorageUtil;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -60,7 +60,7 @@ public class SimpleSeed extends AbstractSeed {
                     final Block b = e.getBlock();
                     if (b.getState().getLightLevel() <= 7) {
                         e.setCancelled(true);
-                        NewBlockStorageUtil.removeBlock(b.getLocation());
+                        BlockStorage.clearBlockInfo(b.getLocation());
                         return;
                     }
                     b.setType(displayBlock);
@@ -72,7 +72,7 @@ public class SimpleSeed extends AbstractSeed {
                     if (e.getBlock().getState().getLightLevel() <= 7 ||
                         !e.canBuild()) {
                         e.setCancelled(true);
-                        NewBlockStorageUtil.removeBlock(b);
+                        BlockStorage.clearBlockInfo(b.getLocation());
                         return;
                     }
 
@@ -84,7 +84,7 @@ public class SimpleSeed extends AbstractSeed {
                 @Override
                 public void onPlayerPlace(@Nonnull BlockPlaceEvent e) {
                     e.setCancelled(true);
-                    NewBlockStorageUtil.removeBlock(e.getBlock());
+                    BlockStorage.clearBlockInfo(e.getBlock().getLocation());
                 }
             });
 
@@ -107,12 +107,12 @@ public class SimpleSeed extends AbstractSeed {
 
                 if (above.getState().getLightLevel() <= 7) {
                     event.cancel();
-                    NewBlockStorageUtil.removeBlock(above);
+                    BlockStorage.clearBlockInfo(above.getLocation());
                     return;
                 }
 
                 above.setType(getDisplayBlock());
-                NewBlockStorageUtil.createBlock(above, getId());
+                BlockStorage.store(above, getId());
                 event.getItem().subtract();
 
             });

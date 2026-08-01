@@ -98,16 +98,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.SlimefunGuguProject</groupId>
-            <artifactId>Slimefun4</artifactId>
-            <version>2024.3.1</version>
+            <!-- 使用 REF/Slimefun4.1 (com.github.slimefun:Slimefun:4.9.5) 本地安装版本，适配 1.21.11 -->
+            <groupId>com.github.slimefun</groupId>
+            <artifactId>Slimefun</artifactId>
+            <version>4.9.5</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.github.baked-libs</groupId>
-                    <artifactId>dough-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
