@@ -54,6 +54,21 @@ public abstract class GastroWorkstation extends MenuBlock {
     protected static final int[] TOOL_BORDER_SLOTS = { 45 };
     protected static final int CRAFT_BUTTON_SLOT = 53;
     private static Map<Location, Pair<Integer, GastroRecipe>> lastInputHashAndRecipe = new HashMap<>();
+    /**
+     * perfect-food-max-chance 的懒加载缓存：合成在每次成功产出 SF 食物时都会用到，
+     * 原先每次都 getConfig().getDouble（split 键 + Map 遍历），高频合成下开销无谓。
+     * 配置在启动后基本不变，且合成仅在主线程，故用主线程懒加载即可。
+     */
+    private static double cachedPerfectFoodMaxChance = Double.NaN;
+
+    private static double getPerfectFoodMaxChance() {
+        if (Double.isNaN(cachedPerfectFoodMaxChance)) {
+            cachedPerfectFoodMaxChance = NumberUtil.clamp(
+                Gastronomicon.getInstance().getConfig().getDouble("perfect-food-max-chance", 0.25),
+                0.0, 1.0);
+        }
+        return cachedPerfectFoodMaxChance;
+    }
 
     public GastroWorkstation(SlimefunItemStack item, ItemStack[] recipe) {
         super(GastroGroups.BASIC_MACHINES, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
@@ -192,13 +207,10 @@ public abstract class GastroWorkstation extends MenuBlock {
                 // Add 1 to proficiency
                 playerData.set(proficiencyPath, proficiency + 1);
 
-                // perfect-food-max-chance 来自 config.yml（默认 0.25）。
+                // perfect-food-max-chance 来自 config.yml（默认 0.25），经懒加载缓存。
                 // 钳制到 [0, 1]，确保 randomRound 仅返回 0/1（否则越界取到产物数组
                 // 后面的"返还物品"槽位）。
-                final double maxChance = NumberUtil.clamp(
-                    Gastronomicon.getInstance().getConfig().getDouble("perfect-food-max-chance", 0.25),
-                    0.0, 1.0);
-                final double perfectProbability = NumberUtil.clamp(proficiency / 864.0, 0.0, maxChance);
+                final double perfectProbability = NumberUtil.clamp(proficiency / 864.0, 0.0, getPerfectFoodMaxChance());
 
                 output = recipeOutputs[NumberUtil.randomRound(perfectProbability)];
                 toReturn = Arrays.copyOfRange(recipeOutputs, 2, recipeOutputs.length);
