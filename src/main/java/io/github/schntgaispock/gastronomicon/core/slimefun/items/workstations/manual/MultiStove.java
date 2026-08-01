@@ -94,6 +94,11 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
     public MultiStove(SlimefunItemStack item, ItemStack[] recipe, int capacity, int energyPerUse) {
         super(item, recipe);
 
+        // capacity 必须能储电；energyPerUse 必须 >0，否则 canCraft 的 charge<energyPerUse
+        // 永假 → 永远可合成且 onSuccessfulCraft 扣 0 → 免费运行。
+        if (capacity <= 0 || energyPerUse <= 0) {
+            throw new IllegalArgumentException("MultiStove capacity/energyPerUse 必须大于 0: " + item.getItemId());
+        }
         this.capacity = capacity;
         this.energyPerUse = energyPerUse;
     }

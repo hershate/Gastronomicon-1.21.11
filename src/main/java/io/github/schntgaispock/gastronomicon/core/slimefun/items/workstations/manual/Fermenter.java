@@ -24,6 +24,11 @@ public class Fermenter extends GastroWorkstation {
     public Fermenter(SlimefunItemStack item, ItemStack[] recipe, int capacity, int mbPerCraft) {
         super(item, recipe);
 
+        // mbPerCraft 必须 >0，否则 canCraft 的 water<mbPerCraft 永假 → 永远可合成且
+        // onSuccessfulCraft 扣 0 → 免费发酵。
+        if (capacity <= 0 || mbPerCraft <= 0) {
+            throw new IllegalArgumentException("Fermenter capacity/mbPerCraft 必须大于 0: " + item.getItemId());
+        }
         this.capacity = capacity;
         this.mbPerCraft = mbPerCraft;
     }

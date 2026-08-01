@@ -22,6 +22,9 @@ public class Refrigerator extends GastroWorkstation implements EnergyNetComponen
     public Refrigerator(SlimefunItemStack item, ItemStack[] recipe, int capacity, int energyPerUse) {
         super(item, recipe);
 
+        if (capacity <= 0 || energyPerUse <= 0) {
+            throw new IllegalArgumentException("Refrigerator capacity/energyPerUse 必须大于 0: " + item.getItemId());
+        }
         this.capacity = capacity;
         this.energyPerUse = energyPerUse;
     }

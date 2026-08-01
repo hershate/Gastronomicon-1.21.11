@@ -68,6 +68,11 @@ public class FishingNet extends SlimefunItem implements InventoryBlock, MachineP
     public FishingNet(SlimefunItemStack item, int speed, ItemStack[] recipe) {
         super(GastroGroups.ELECTRIC_MACHINES, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
 
+        // speed 在 tick 中作 240/speed 除数，必须 >0；否则会在 ticker 线程抛
+        // ArithmeticException。ElectricKitchen 经 setProcessingSpeed 校验，此处对齐。
+        if (speed <= 0) {
+            throw new IllegalArgumentException("FishingNet speed 必须大于 0: " + item.getItemId());
+        }
         this.speed = speed;
         machineProcessor.setProgressBar(progressBar);
         createPreset(this, this::constructMenu);
