@@ -116,8 +116,17 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
 
         menu.addMenuOpeningHandler(player -> {
             final String temp = BlockStorage.getLocationInfo(menu.getLocation(), TEMPERATURE_KEY);
-            menu.replaceExistingItem(TEMPERATURE_BUTTON_SLOT,
-                temp == null ? TEMPERATURE_BUTTON_LOW : Temperature.valueOf(temp).getItem(), false);
+            // temp 来自 BlockStorage 持久数据，正常为合法枚举名，但数据损坏/枚举变更时
+            // valueOf 会抛 IAE 导致该炉菜单无法打开（每次开炉触发）。默认 LOW。
+            Temperature parsed = Temperature.LOW;
+            if (temp != null) {
+                try {
+                    parsed = Temperature.valueOf(temp);
+                } catch (IllegalArgumentException e) {
+                    parsed = Temperature.LOW;
+                }
+            }
+            menu.replaceExistingItem(TEMPERATURE_BUTTON_SLOT, parsed.getItem(), false);
         });
 
         menu.addMenuClickHandler(TEMPERATURE_BUTTON_SLOT, (player, slot, item, action) -> {
