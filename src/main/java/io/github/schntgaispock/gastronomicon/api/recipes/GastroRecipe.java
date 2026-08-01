@@ -91,6 +91,11 @@ public abstract class GastroRecipe {
      */
     public GastroRecipe(GastroRecipeType recipeType, RecipeInput inputs, Set<ItemStack> tools,
         ItemStack... outputs) {
+        // 公开 API 防御：0/null 产物会让 GastroWorkstation(recipeOutputs[0]) 与
+        // ElectricKitchen(getOutputs()[0]) 在合成时 AIOOBE/NPE。注册期 fail-fast。
+        if (outputs == null || outputs.length == 0) {
+            throw new IllegalArgumentException("GastroRecipe 必须至少有一个产物");
+        }
         this.recipeType = recipeType;
         this.inputs = inputs;
         this.tools = tools;
