@@ -8,7 +8,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import net.guizhanss.guizhanlib.minecraft.helper.potion.PotionEffectTypeHelper;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -399,13 +398,15 @@ public class FoodEffect {
             "&7获得 " + a + "x " + name,
             "&7获得 " + pa + "x " + name,
             (Player player, Boolean isPerfect) -> {
-                player.getInventory().addItem(item);
+                final ItemStack give = item.clone();
+                give.setAmount(isPerfect ? pa : a);
+                player.getInventory().addItem(give);
             });
     }
 
     /**
      * Returns a FoodEffect that gives the specified item to the player.
-     * 
+     *
      * @param item
      *            The item to give
      * @param amount
@@ -417,7 +418,7 @@ public class FoodEffect {
     public static FoodEffect giveItem(ItemStack item, int amount) {
         final ItemStack clone = item.clone();
         clone.setAmount(amount);
-        return _giveItem(item);
+        return _giveItem(clone);
     }
 
     /**
@@ -580,9 +581,10 @@ public class FoodEffect {
      * @return A FoodEffect that launces the player in a certain direction
      */
     public static FoodEffect move(Vector velocity, String description) {
-        final Vector pv = velocity.multiply(PERFECT_MULTIPLIER_VELOCITY);
+        final Vector normal = velocity.clone();
+        final Vector perfect = velocity.clone().multiply(PERFECT_MULTIPLIER_VELOCITY);
         return new FoodEffect(description, description, (Player player, Boolean isPerfect) -> {
-            player.setVelocity(player.getVelocity().add(isPerfect ? pv : velocity));
+            player.setVelocity(player.getVelocity().add(isPerfect ? perfect : normal));
         });
     };
 
@@ -600,8 +602,9 @@ public class FoodEffect {
 
     private static final FoodEffect clearPotionEffects = new FoodEffect("&f清除所有效果",
         (Player player, Boolean isPerfect) -> {
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                "/effect " + player.getName() + " clear");
+            for (PotionEffect effect : player.getActivePotionEffects()) {
+                player.removePotionEffect(effect.getType());
+            }
         });
 
     /**
