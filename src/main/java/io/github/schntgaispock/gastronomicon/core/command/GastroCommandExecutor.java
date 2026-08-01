@@ -121,7 +121,7 @@ public class GastroCommandExecutor implements CommandExecutor {
 
     private void sendProficiencies(Player player, Player toCheck) {
         Gastronomicon.sendMessage(player, Gastronomicon.getInstance().getPlayerData()
-            .get(player.getUniqueId() + ".proficiencies", "出现了一些小错误!").toString());
+            .get(toCheck.getUniqueId() + ".proficiencies", "出现了一些小错误!").toString());
     }
 
     private void sendInfo(Player player) {
@@ -214,7 +214,7 @@ public class GastroCommandExecutor implements CommandExecutor {
 
     private boolean commandProficiencyModify(Player player, Player other, String mode, String foodId, int amount) {
         final AddonConfig playerData = Gastronomicon.getInstance().getPlayerData();
-        final String proficiencyPath = player.getUniqueId() + ".proficiencies." + foodId;
+        final String proficiencyPath = other.getUniqueId() + ".proficiencies." + foodId;
         switch (mode) {
             case "set":
                 playerData.set(proficiencyPath, amount);
@@ -228,7 +228,7 @@ public class GastroCommandExecutor implements CommandExecutor {
                 break;
             case "sub":
                 playerData.set(proficiencyPath,
-                    Math.min(playerData.getInt(proficiencyPath, 0) - amount, 0));
+                    Math.max(playerData.getInt(proficiencyPath, 0) - amount, 0));
                 Gastronomicon.sendMessage(player,
                     "成功为玩家" + other.getName() + "的食物 " + foodId + " 减少熟练度: " + amount);
                 break;
