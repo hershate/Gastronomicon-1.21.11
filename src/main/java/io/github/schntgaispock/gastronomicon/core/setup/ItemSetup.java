@@ -114,7 +114,7 @@ public class ItemSetup {
         final ItemStack BREAD = new ItemStack(Material.BREAD);
         final ItemStack EGG = new ItemStack(Material.EGG);
         final ItemStack WATER_BUCKET = new ItemStack(Material.WATER_BUCKET);
-        final ItemStack MILK_BUCKET = new ItemStack(Material.WATER_BUCKET);
+        final ItemStack MILK_BUCKET = new ItemStack(Material.MILK_BUCKET);
         final ItemStack SUGAR = new ItemStack(Material.SUGAR);
         final ItemStack COOKED_PORKCHOP = new ItemStack(Material.COOKED_PORKCHOP);
         final ItemStack COOKED_BEEF = new ItemStack(Material.COOKED_BEEF);
