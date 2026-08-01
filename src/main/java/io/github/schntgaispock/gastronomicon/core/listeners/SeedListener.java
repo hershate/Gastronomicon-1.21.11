@@ -78,7 +78,7 @@ public class SeedListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCropDestroy(BlockDestroyEvent e) {
         final Block b = e.getBlock();
         final AbstractSeed seed = getGastroSeed(b);
@@ -91,7 +91,7 @@ public class SeedListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onLiquidCropDestroy(BlockFromToEvent e) {
         final Block b = e.getToBlock();
         final AbstractSeed seed = getGastroSeed(b);

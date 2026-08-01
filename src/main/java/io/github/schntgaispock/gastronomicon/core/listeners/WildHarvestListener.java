@@ -97,7 +97,7 @@ public class WildHarvestListener implements Listener {
         return dropsByMob.getOrDefault(dropFrom, null);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
         final Player p = e.getPlayer();
         if (p.getGameMode() != GameMode.SURVIVAL) {
