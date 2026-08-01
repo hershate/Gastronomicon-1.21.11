@@ -416,8 +416,11 @@ public class FoodEffect {
     @Nonnull
     @ParametersAreNonnullByDefault
     public static FoodEffect giveItem(ItemStack item, int amount) {
+        // 与 heal/xp/air/warm 等工厂一致地钳制到 >=1：amount<0 时 setAmount 会抛
+        // IllegalArgumentException（Bukkit）。
+        final int safeAmount = Math.max(amount, 1);
         final ItemStack clone = item.clone();
-        clone.setAmount(amount);
+        clone.setAmount(safeAmount);
         return _giveItem(clone);
     }
 
@@ -446,7 +449,7 @@ public class FoodEffect {
     @Nonnull
     @ParametersAreNonnullByDefault
     public static FoodEffect giveItem(Material material, int amount) {
-        return _giveItem(new ItemStack(material, amount));
+        return _giveItem(new ItemStack(material, Math.max(amount, 1)));
     }
 
     /**
