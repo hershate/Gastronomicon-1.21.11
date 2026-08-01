@@ -99,7 +99,11 @@ REF 基于官方 experimental 分支，与汉化组版本存在深度 API 差异
 
 ## 6. 编译结果与待办
 
-`mvn compile` 已通过（BUILD SUCCESS）。剩余遗留项：
+完整构建已验证通过：`mvn package -DskipTests` → **BUILD SUCCESS**（约 21s），生成：
+- `target/Gastronomicon v1.1.3.jar`（shaded，约 2.19 MB，**部署用**）
+- `target/original-Gastronomicon v1.1.3.jar`（shade 前，约 261 KB）
+
+剩余遗留项：
 
 - **FoodEffect.java**：4 处 deprecation 警告（GuizhanLibPlugin 的 `PotionEffectTypeHelper`、`ItemStackHelper` 已标记为 deprecated），不影响编译，待 GuizhanLibPlugin 升级后处理。
 - **运行时风险点**（未验证，需在服务器中实测）：
