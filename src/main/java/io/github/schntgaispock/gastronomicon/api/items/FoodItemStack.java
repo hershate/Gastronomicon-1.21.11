@@ -85,7 +85,7 @@ public class FoodItemStack extends SlimefunItemStack {
             }
         }
 
-        if (lore.length != 0) {
+        if (lore != null && lore.length != 0) {
             fLore.add("");
             for (String loreLine : lore) {
                 fLore.add((isPerfect ? GastroTheme.PERFECT_FOOD : GastroTheme.REGULAR_FOOD).getLoreColor() + loreLine);
