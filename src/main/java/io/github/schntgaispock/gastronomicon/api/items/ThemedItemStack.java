@@ -28,9 +28,11 @@ public class ThemedItemStack extends SlimefunItemStack {
         return (type == null) ? Material.BARRIER : type;
     }
 
+    @Override
     public @Nonnull String getDisplayName() {
-        String name = getDisplayName();
-        return (name == null) ? "名称丢失" : name;
+        // 必须调用 super.getDisplayName()，原先误写为 getDisplayName() 会无限递归 → StackOverflowError。
+        final String name = super.getDisplayName();
+        return (name == null || name.isEmpty()) ? "名称丢失" : name;
     }
 
     @ParametersAreNonnullByDefault
