@@ -252,17 +252,41 @@ public class ElectricKitchen extends AContainer {
             hashRecipePair.second(found);
         }
 
+        // 输出空间检查：输出满时不消耗原料，避免操作完成后产物被 pushItem
+        // 静默 void（丢物品）。对应 REF AContainer#scanForRecipe 的 fitAll 守卫。
+        if (!menu.fits(recipe.getOutputs()[0], getOutputSlots())) {
+            return null;
+        }
+
+        // 异步 tick 期间玩家可在主线程改动菜单：消耗前必须重新校验每个槽位仍持有
+        // 足够原料，全部通过后才消耗。否则会出现：玩家中途取走原料导致 input 为 null
+        // 而 input.asQuantity 抛 NPE，或原料数量不足导致空耗产出（可被恶意客户端定时
+        // 点击利用）。对应 REF AContainer#scanForRecipe 的 re-validate-before-consume。
+        for (final var pair : found.entries()) {
+            if (pair.first() == null) {
+                continue;
+            }
+            final ItemStack input = menu.getItemInSlot(pair.first());
+            if (input == null || input.getAmount() < pair.second()) {
+                // 原料已被取走或不足：作废缓存命中，下 tick 重新匹配（不消耗任何原料）
+                hashRecipePair.first(0);
+                hashRecipePair.second(null);
+                return null;
+            }
+        }
+
         final ArrayList<ItemStack> inputs = new ArrayList<>();
         final ArrayList<ItemStack> outputs = new ArrayList<>();
         outputs.add(recipe.getOutputs()[0]);
 
         for (final var pair : found.entries()) {
-            if (pair.first() == null) continue;
+            if (pair.first() == null) {
+                continue;
+            }
 
             final int slot = pair.first();
             final ItemStack input = menu.getItemInSlot(slot);
-            final ItemStack clone = input.asQuantity(pair.second());
-            inputs.add(clone);
+            inputs.add(input.asQuantity(pair.second()));
             ItemUtil.consumeItem(input, pair.second(), true).ifPresent(mat -> {
                 outputs.add(new ItemStack(mat));
             });
