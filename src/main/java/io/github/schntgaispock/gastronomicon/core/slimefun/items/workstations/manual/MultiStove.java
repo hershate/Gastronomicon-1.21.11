@@ -1,6 +1,7 @@
 package io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.manual;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,7 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.schntgaispock.gastronomicon.Gastronomicon;
 import io.github.schntgaispock.gastronomicon.api.recipes.GastroRecipe;
+import io.github.schntgaispock.gastronomicon.api.recipes.GastroRecipe.RecipeMatchResult;
 import io.github.schntgaispock.gastronomicon.api.recipes.MultiStoveRecipe;
+import io.github.schntgaispock.gastronomicon.api.recipes.RecipeRegistry;
 import io.github.schntgaispock.gastronomicon.core.slimefun.recipes.GastroRecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
@@ -153,16 +156,25 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
     @Nullable
     protected GastroRecipe findRecipe(ItemStack[] ingredients, List<ItemStack> containers, List<ItemStack> tools,
         Player player, BlockMenu menu) {
-        final GastroRecipe recipe = super.findRecipe(ingredients, containers, tools, player, menu);
-        if (recipe instanceof final MultiStoveRecipe msRecipe) {
-            if (msRecipe.getTemperature().getItem().isSimilar(menu.getItemInSlot(TEMPERATURE_BUTTON_SLOT))) {
-                return msRecipe;
-            } else {
-                return null;
+        final ItemStack tempButton = menu.getItemInSlot(TEMPERATURE_BUTTON_SLOT);
+        final Set<GastroRecipe> recipes = RecipeRegistry.getRecipes(getGastroRecipeType());
+        // 同一原料组合在不同温度下可能对应不同产物，因此不能只取首个原料匹配项；
+        // 需遍历全部配方，返回首个「原料匹配 且 温度吻合」的配方。
+        for (final GastroRecipe recipe : recipes) {
+            if (!(recipe instanceof final MultiStoveRecipe msRecipe)) {
+                continue;
             }
-        } else {
-            return recipe;
+            final RecipeMatchResult result = msRecipe.matches(ingredients, containers, tools);
+            if (!result.isMatch()) {
+                continue;
+            } else if (!result.isCraftable()) {
+                break;
+            }
+            if (msRecipe.getTemperature().getItem().isSimilar(tempButton)) {
+                return msRecipe;
+            }
         }
+        return null;
     }
 
     @Override
