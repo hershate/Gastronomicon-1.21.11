@@ -3,6 +3,7 @@ package io.github.schntgaispock.gastronomicon.util.item;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
@@ -82,6 +83,28 @@ public class ItemUtil {
             case "UNLUCK" -> "Bad Luck";
             default -> WordUtils.capitalizeFully(type.getName().replaceAll("_", " "));
         };
+    }
+
+    /**
+     * 取物品的可读显示名，用于食物效果描述（如「获得 Nx &lt;name&gt;」）。
+     * <p>
+     * 1.1.5 起取代对 GuizhanLib {@code ItemStackHelper.getName} 的依赖：优先返回物品自定义名
+     * （Slimefun 物品与任何命名物品均带自定义名，故不受影响）；未命名的纯原版材质退化为材质名
+     * 的人类可读形式（原由鬼斩前置库提供服务端中文名，移除该依赖后此处为英文回退）。
+     */
+    @SuppressWarnings("deprecation")
+    @Nonnull
+    public static String getDisplayName(@Nullable ItemStack stack) {
+        if (stack == null || stack.getType() == Material.AIR) {
+            return "空气";
+        }
+        if (stack.hasItemMeta()) {
+            final var meta = stack.getItemMeta();
+            if (meta != null && meta.hasDisplayName()) {
+                return meta.getDisplayName();
+            }
+        }
+        return WordUtils.capitalizeFully(stack.getType().name().replace('_', ' '));
     }
 
     /**

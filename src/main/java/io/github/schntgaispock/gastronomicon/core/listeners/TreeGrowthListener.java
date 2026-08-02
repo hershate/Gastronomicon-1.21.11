@@ -30,7 +30,9 @@ public class TreeGrowthListener implements Listener {
         e.setCancelled(true);
         BlockStorage.clearBlockInfo(l);
 
-        Gastronomicon.getInstance().getScheduler().run(() -> {
+        // 1.1.5: 原 getScheduler().run(...) 即 GuizhanLib Scheduler 的同步下一 tick 调度，
+        // 等价于 Bukkit.getScheduler().runTask(...)。内联以去除对鬼斩前置库的运行期依赖。
+        Bukkit.getScheduler().runTask(Gastronomicon.getInstance(), () -> {
             try {
                 tree.build(l, sapling);
             } catch (NullPointerException | IllegalArgumentException err) {

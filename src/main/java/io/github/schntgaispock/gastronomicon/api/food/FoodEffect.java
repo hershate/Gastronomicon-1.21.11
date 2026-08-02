@@ -6,8 +6,6 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
-import net.guizhanss.guizhanlib.minecraft.helper.potion.PotionEffectTypeHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -110,8 +108,8 @@ public class FoodEffect {
         final int a = Math.max(amplifier, 0);
         final int pa = amplifier + PERFECT_BONUS_POTION_LEVEL;
         return new FoodEffect(
-            color + PotionEffectTypeHelper.getName(effectType) + " " + NumberUtil.asRomanNumeral(a + 1) + " (" + d + " 秒)",
-            color + PotionEffectTypeHelper.getName(effectType) + " " + NumberUtil.asRomanNumeral(pa + 1) + " (" + pd + " 秒)",
+            color + ItemUtil.getPotionName(effectType) + " " + NumberUtil.asRomanNumeral(a + 1) + " (" + d + " 秒)",
+            color + ItemUtil.getPotionName(effectType) + " " + NumberUtil.asRomanNumeral(pa + 1) + " (" + pd + " 秒)",
             (Player player, Boolean isPerfect) -> {
                 player.addPotionEffect(new PotionEffect(effectType, 20 * (isPerfect ? pd : d), (isPerfect ? pa : a),
                     ambience, particles, icon));
@@ -368,7 +366,7 @@ public class FoodEffect {
     @Nonnull
     @ParametersAreNonnullByDefault
     public static FoodEffect removePotionEffect(PotionEffectType type) {
-        final String desc = "&b清除 " + PotionEffectTypeHelper.getName(type) + " 药水效果";
+        final String desc = "&b清除 " + ItemUtil.getPotionName(type) + " 药水效果";
         return new FoodEffect(desc, desc, (Player player, Boolean isPerfect) -> {
             player.removePotionEffect(type);
         });
@@ -393,7 +391,7 @@ public class FoodEffect {
     private static FoodEffect _giveItem(ItemStack item) {
         final int a = item.getAmount();
         final int pa = (int) Math.ceil(a * PERFECT_MULTIPLIER_ITEM_AMOUNT);
-        final String name = ItemStackHelper.getName(item);
+        final String name = ItemUtil.getDisplayName(item);
         return new FoodEffect(
             "&7获得 " + a + "x " + name,
             "&7获得 " + pa + "x " + name,

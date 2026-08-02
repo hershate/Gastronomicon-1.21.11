@@ -3,8 +3,6 @@ package io.github.schntgaispock.gastronomicon;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.guizhanss.guizhanlib.slimefun.addon.Scheduler;
-import net.guizhanss.minecraft.guizhanlib.updater.GuizhanUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -27,15 +25,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
-import java.util.logging.Level;
-
 @Getter
 public class Gastronomicon extends AbstractAddon {
 
     private static @Getter Gastronomicon instance;
 
-    @Getter
-    private Scheduler scheduler;
     private AddonConfig playerData;
     private AddonConfig customFood;
 
@@ -47,18 +41,13 @@ public class Gastronomicon extends AbstractAddon {
     @SuppressWarnings("deprecation")
     public void enable() {
         instance = this;
-        scheduler = new Scheduler(this);
 
-        if (!getServer().getPluginManager().isPluginEnabled("GuizhanLibPlugin")) {
-            getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件(GuizhanLibPlugin) 才能运行!");
-            getLogger().log(Level.SEVERE, "从此处下载: https://50L.cc/gzlib");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        if (getConfig().getBoolean("options.auto-update", true) && getPluginVersion().startsWith("Build")) {
-            GuizhanUpdater.start(this, getFile(), "SlimefunGuguProject", "Gastronomicon", "master");
-        }
+        // 1.1.5: 移除对 GuizhanLibPlugin 的运行期依赖。原 Scheduler / GuizhanUpdater /
+        // ItemStackHelper / PotionEffectTypeHelper 均为鬼斩前置库提供的类，不同版本间包路径
+        // （net.guizhanss.guizhanlib.* ↔ net.guizhanss.guizhanlibplugin.* / ...gugu...）
+        // 会迁移/删除，导致服务器安装的版本与本插件编译期不一致时抛 NoClassDefFoundError
+        // 而无法加载（#issue: Papo 服务端缺少 slimefun.addon.Scheduler）。现已全部内联实现，
+        // 插件自包含、与鬼斩前置库版本无关。原 Scheduler.run == Bukkit.runTask（同步下一 tick）。
 
         getLogger().info("#======================================#");
         getLogger().info("#    Gastronomicon by SchnTgaiSpock    #");
