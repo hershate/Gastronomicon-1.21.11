@@ -1,6 +1,6 @@
 options:
-  # 是否启用自动更新
-  auto-update: true
+  # 是否启用自动更新（1.1.5 已移除更新检查功能，此项保留仅为兼容前置校验，始终无效）
+  auto-update: false
 
 # 是否禁用需要异域花园(ExoticGarden)物品的配方
 disable-exotic-garden-recipes: false

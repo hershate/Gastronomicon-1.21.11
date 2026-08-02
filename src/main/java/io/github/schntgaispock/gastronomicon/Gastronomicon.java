@@ -3,8 +3,6 @@ package io.github.schntgaispock.gastronomicon;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -54,10 +52,12 @@ public class Gastronomicon extends AbstractAddon {
         getLogger().info("#   美食家    粘液科技简中汉化组汉化   #");
         getLogger().info("#======================================#");
 
-        final Metrics metrics = new Metrics(this, 16941);
-
-        metrics.addCustomChart(
-            new SimplePie("exoticgardenInstalled", () -> Boolean.toString(isPluginEnabled("ExoticGarden"))));
+        // 1.1.5: 移除匿名上报（bStats Metrics）与更新检查。
+        //   - 匿名上报：原 new Metrics(this, 16941) + SimplePie 已删除，pom 移除 bstats 依赖与 shade 重定向。
+        //   - 更新检查：本插件自带的 GuizhanUpdater 已于 1.1.5 移除；InfinityLib AbstractAddon 的
+        //     GitHubBuildsUpdater 仅对 "Build NN" 开发版实例化（反编译确认构造器 ifeq 跳过），
+        //     release "1.1.5" 版本号不匹配 → updater 保持 null → onEnable 中两处 start() 均被
+        //     ifnull 跳过，故 release 永不联网检查更新；config options.auto-update 亦置 false 双保险。
 
         ItemSetup.setup();
         ResearchSetup.setup();

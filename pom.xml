@@ -63,10 +63,6 @@
                             <pattern>io.github.mooy1.infinitylib</pattern>
                             <shadedPattern>io.github.schntgaispock.infinitylib</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>io.github.schntgaispock.bstats</shadedPattern>
-                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
@@ -132,13 +128,6 @@
             <version>3.0.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
-            <scope>compile</scope>
-        </dependency>
-        
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

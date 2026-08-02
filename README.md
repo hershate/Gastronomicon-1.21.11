@@ -6,12 +6,6 @@
 
 你可以在 `config.yml` 中关闭插件关联。
 
-<p align="center">
-  <a href="https://builds.guizhanss.net/SlimefunGuguProject/Gastronomicon/master/">
-    <img src="https://builds.guizhanss.net/f/SlimefunGuguProject/Gastronomicon/master/badge.svg" alt="构建站状态"/>
-  </a>
-</p>
-
 ## 玩法
 
 请查阅Wiki <https://schn.pages.dev/gastronomicon>
