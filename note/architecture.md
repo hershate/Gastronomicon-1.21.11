@@ -7,7 +7,7 @@
 
 - **定位**：粘液科技 (Slimefun) 的食物主题附属插件，新增大量食材、料理、烹饪工作站与作物/种子系统。
 - **基座**：基于 [InfinityLib](https://github.com/mooy1/infinitylib) 的 `AbstractAddon` / `MenuBlock` 开发。
-- **版本**：`1.1.5`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本（[release/1.1.4.md](release/1.1.4.md)）；**1.1.5** 为关键修复版本——移除 GuizhanLibPlugin 运行期依赖、修复加载期 `NoClassDefFoundError`（[release/1.1.5.md](release/1.1.5.md)）。
+- **版本**：`1.1.6`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本（[release/1.1.4.md](release/1.1.4.md)）；1.1.5 移除 GuizhanLibPlugin 运行期依赖、修复加载期 `NoClassDefFoundError`（[release/1.1.5.md](release/1.1.5.md)）；**1.1.6** 移除全部外部依赖（vendor InfinityLib、jackson→GSON、剥离 jsr305），仅依赖 Slimefun + Paper 服务端 API（[release/1.1.6.md](release/1.1.6.md)）。
 - **当前主线工作**：将本附属适配至 Minecraft `1.21.11`，参考源码位于 [REF/Slimefun4.1](../REF/Slimefun4.1)（非官方维护分支，版本 `4.9.5`，**只读，不得修改**）。
 
 ## 2. 环境与依赖
@@ -19,7 +19,7 @@
 | `ExoticGarden`（异域花园） | 软依赖 | 提供部分原料（橙子/番茄/蒜…），缺失时自动隐藏相关配方 |
 | `DynaTech`（动力科技） | 软依赖 | 自动化作物培育，**默认禁用**（见 [config.yml](../src/main/resources/config.yml#L9) 与 commit `97d7f69`，因不兼容） |
 | `SlimeHUD` | 软依赖 | HUD 展示，版本不兼容时静默跳过 |
-| `InfinityLib` | 编译期打包 | shade 时重定向到 `io.github.schntgaispock.infinitylib` |
+| ~~`InfinityLib`~~ | ~~编译期打包~~ | **1.1.6 已 vendor 为源码**（[src/.../mooy1/infinitylib/](../src/main/java/io/github/mooy1/infinitylib/)），不再为外部 Maven 依赖。仅保留本插件用到的 7 个类，已适配 REF（`MenuBlock` 用 `CustomItemStack.create`）；shade 重定向至 `io.github.schntgaispock.infinitylib` 仍保留 |
 
 - **构建**：Java 17，Paper 1.19.3 API，maven-shade-plugin 打包。
 - **入口**：`io.github.schntgaispock.gastronomicon.Gastronomicon`（见 [plugin.yml](../src/main/resources/plugin.yml#L7)）。

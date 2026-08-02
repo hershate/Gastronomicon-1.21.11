@@ -103,6 +103,10 @@ REF 基于官方 experimental 分支，与汉化组版本存在深度 API 差异
 - `target/Gastronomicon v1.1.3.jar`（shaded，约 2.19 MB，**部署用**）
 - `target/original-Gastronomicon v1.1.3.jar`（shade 前，约 261 KB）
 
+> **1.1.6 更新**：移除全部外部依赖后，产物 `target/Gastronomicon v1.1.6.jar` 缩至 **约 277 KB**（shaded），
+> 仅含插件自身代码 + vendor 的 InfinityLib（重定向）；`com/*` 等服务端库 0 打包。
+> 完整依赖审计见 [dependency-audit.md](dependency-audit.md)，改动见 [release/1.1.6.md](release/1.1.6.md)。
+
 剩余遗留项：
 
 - ~~**FoodEffect.java**：4 处 deprecation 警告（GuizhanLibPlugin 的 `PotionEffectTypeHelper`、`ItemStackHelper`）~~ — **1.1.5 已彻底解决**：鬼斩前置库运行期依赖整体移除，相关 import 与 API 调用全部内联（见 [release/1.1.5.md](release/1.1.5.md)），不再有此类警告。
