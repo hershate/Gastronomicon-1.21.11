@@ -136,19 +136,30 @@ public abstract class GastroWorkstation extends MenuBlock {
             if (freeSlot == null)
                 return false;
 
-            // Get the items in the menu
-            final ItemStack[] ingredients = Arrays.stream(getInputSlots()).mapToObj(s -> {
-                final ItemStack i = menu.getItemInSlot(s);
-                return i == null ? null : i.asOne();
-            }).toArray(ItemStack[]::new);
-            final List<ItemStack> containers = Arrays.stream(getContainerSlots()).mapToObj(s -> {
-                final ItemStack i = menu.getItemInSlot(s);
-                return i == null ? null : i.asOne();
-            }).toList();
-            final List<ItemStack> tools = Arrays.stream(getToolSlots()).mapToObj(s -> {
-                final ItemStack i = menu.getItemInSlot(s);
-                return i == null ? null : i.asOne();
-            }).toList();
+            // Get the items in the menu.
+            // [perf] 原用 Arrays.stream(...).mapToObj(...).toList()/toArray()：每次合成分配 3 个流管线
+            // （Spliterator + 多个包装对象）+ ArrayList + int->Integer 装箱。改 plain 循环 + Arrays.asList
+            // 薄包装，去掉流与装箱分配。containers/tools 仍为 List 以兼容 findRecipe/matches 签名。
+            final int[] inSlots = getInputSlots();
+            final ItemStack[] ingredients = new ItemStack[inSlots.length];
+            for (int idx = 0; idx < inSlots.length; idx++) {
+                final ItemStack i = menu.getItemInSlot(inSlots[idx]);
+                ingredients[idx] = i == null ? null : i.asOne();
+            }
+            final int[] contSlots = getContainerSlots();
+            final ItemStack[] contArr = new ItemStack[contSlots.length];
+            for (int idx = 0; idx < contSlots.length; idx++) {
+                final ItemStack i = menu.getItemInSlot(contSlots[idx]);
+                contArr[idx] = i == null ? null : i.asOne();
+            }
+            final List<ItemStack> containers = Arrays.asList(contArr);
+            final int[] toolSlots = getToolSlots();
+            final ItemStack[] toolArr = new ItemStack[toolSlots.length];
+            for (int idx = 0; idx < toolSlots.length; idx++) {
+                final ItemStack i = menu.getItemInSlot(toolSlots[idx]);
+                toolArr[idx] = i == null ? null : i.asOne();
+            }
+            final List<ItemStack> tools = Arrays.asList(toolArr);
 
             int hash = 1;
 

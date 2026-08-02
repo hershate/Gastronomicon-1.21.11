@@ -39,8 +39,8 @@
 | 1 | RecipeComponent 缓存 SlimefunItem 解析（最热路径） | ✅ | [01-recipe-component-cache.md](01-recipe-component-cache.md) |
 | 2 | LootTable.generate（数组索引 + 整数随机 + 满桶跳过） | ✅ | [02-loottable-generate.md](02-loottable-generate.md) |
 | 3 | NumberUtil/FoodEffect 数学与分配清理（含 teleport Math.pow 循环不变量） | ✅ | [03-numberutil-food-math.md](03-numberutil-food-math.md) |
-| 4 | GastroWorkstation 合成路径分配（去 stream/toList） | ⏳ | — |
-| 5 | 机器 ticker / 监听器 / Counter 等 | ⏸ | — |
+| 4 | 合成路径分配（stream→loop）+ ElectricKitchen getInputSlots 复用 | ✅ | [04-craft-path-allocations.md](04-craft-path-allocations.md) |
+| 5 | 监听器路径 / Counter 评估 / ElectricKitchen 哈希缓存(需服务端验证) | ⏳ | — |
 
 > ⏳进行中 ⏸待办 ✅完成 ❌放弃（注明原因）
 

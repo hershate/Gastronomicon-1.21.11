@@ -214,8 +214,10 @@ public class ElectricKitchen extends AContainer {
         // 哈希必须包含 foodId：若玩家不改变输入、仅更换厨师机器人（不同食物），哈希相同会
         // 命中旧 Counter（旧食物的槽位映射），却产出新机器人食物 -> 错配方/可被利用
         // （用便宜食物原料 + 换昂贵食物机器人 -> 产出昂贵食物）。
+        // [perf] getInputSlots() 每次返回 new int[]；findNextRecipe 每 tick 调用，取一次复用于哈希与匹配两处循环。
+        final int[] inputSlots = getInputSlots();
         int hash = foodId.hashCode();
-        for (int slot : getInputSlots()) {
+        for (int slot : inputSlots) {
             hash = hash * 31 + ItemUtil.hashIgnoreAmount(menu.getItemInSlot(slot));
         }
 
@@ -236,7 +238,7 @@ public class ElectricKitchen extends AContainer {
                 if (component == RecipeComponent.EMPTY) continue;
 
                 boolean matched = false;
-                for (int slot : getInputSlots()) {
+                for (int slot : inputSlots) {
                     final ItemStack input = menu.getItemInSlot(slot);
                     if (component.matches(input) && input.getAmount() > found.get(slot)) {
                         matched = true;
