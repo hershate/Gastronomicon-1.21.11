@@ -43,13 +43,29 @@
 | 5 | Counter.add 查找 4→1 + WildHarvest map 查找去重 | ✅ | [05-counter-listener-lookups.md](05-counter-listener-lookups.md) |
 | 6 | HuntingTrap.tick getLocation() 分配 + 剩余路径巡检 | ✅ | [06-ticker-allocations-survey.md](06-ticker-allocations-survey.md) |
 | 7 | ElectricKitchen 每 tick 输入哈希引用缓存（源码证安全） | ✅ | [07-electrickitchen-hash-cache.md](07-electrickitchen-hash-cache.md) |
-| 8 | 继续深挖（GastroFood 消费路径 / 种子 ticker / 配方索引 等） | ⏳ | — |
+| 8 | 最终巡检（种子/FoodNet/canCraft/命令）→ **确认无可行优化，正式收口** | ✅ | 见下 |
 
-## 状态
+## 状态：正式收口
 
-Round 7 完成了此前列为「需服务端验证」的最大单项项 —— 本轮从 REF 源码证明了 `getItemInSlot` 返回同一引用 +
-输入槽食材无原地 meta 变更，故引用缓存**可证安全**并已实施。版本维持 `1.2.0`（未发布，Round 7 并入），
-合并 release note [../release/1.2.0.md](../release/1.2.0.md)。**继续深挖其余可优化面。**
+Round 7 完成了此前列为「需服务端验证」的最大单项项（从 REF 源码证安全并实施）。Round 8 最终巡检确认
+**高/中频、离线可安全优化的面已用尽**。版本 `1.2.0`（未发布，含 Round 0–7），合并 release note
+[../release/1.2.0.md](../release/1.2.0.md)。
+
+### Round 8 最终巡检（均已查、均无安全优化空间）
+
+| 路径 | 频率 | 结论 |
+|---|---|---|
+| `GastroFood.onRightClick`（食用） | 中 | 一次 `getByItem` + Bukkit 调用；改用 `this` 低价值且有微风险，不动 |
+| 手动工作站 `canCraft`（Fermenter/GrainMill/Refrigerator/MultiStove/CulinaryWorkbench） | 每合成 | GrainMill/CulinaryWorkbench `return true`；其余单次 PDC/charge 读，已极简 |
+| `AbstractSeed` 及种子 ticker | 事件驱动（随机 tick/破坏） | 低频；`onExplode` 的 `new ItemStack(AIR)` 仅爆炸时，不动 |
+| `FishingNet` ticker | 每 tick | 1.1.4 已优化（waterlogged 读-比-写、`%20` 节流） |
+| 命令（GastroCommandExecutor/TabCompleter）stream | 玩家命令 | 低频，不动 |
+
+### 评估后**不做**的结构项（风险/收益不成立）
+
+- **配方索引**（findRecipe 命中失败时由 O(R) 线性扫降至 O(候选)）：shaped/shapeless + 组组件 + 「首个命中优先」
+  使索引复杂且易破坏优先级语义；Round 1 后 `matches()` 已很便宜，且仅命中失败时扫描——**风险 > 收益，不做**。
+- **`RecipeInput.getAll()` 缓存**：ElectricKitchen 仅命中失败路径调用；返回共享可变数组危及公开 API——不做。
 
 ### 残留理论风险（已记录，非阻塞）
 
