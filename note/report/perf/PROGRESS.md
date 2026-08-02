@@ -17,7 +17,8 @@
   "$JAVA_HOME/bin/java"  -cp "benchmark/build;target/classes;$CP" <基准主类全名>
   ```
 - 基准方法论见 [BenchmarkHarness](../../../benchmark/src/io/github/schntgaispock/gastronomicon/benchmark/BenchmarkHarness.java)：
-  3 轮预热 + 5 轮测量取最优；消费返回值防死代码消除。
+  **v2（Round 2 起）**：`measure(name, outerCalls, innerOps, op)`，op() 内扁平循环做 innerOps 次工作（不经 lambda），5 轮预热 + 8 轮测量取最优；ns/op = 单次工作单元。
+  > Round 0 报告的绝对值用旧 harness（per-100 微操作）；Round 2 起为 per-op。**同口径前后对比**均用各自轮次的同 JVM 测量（Round 2 用同 JVM OLD vs NEW）。
 
 ## 关键约束（Probe 实测结论）
 
@@ -36,8 +37,8 @@
 |---|---|---|---|
 | 0 | 基准设施 + Probe + 纯 JVM 基线 | ✅ | [00-baseline-and-methodology.md](00-baseline-and-methodology.md) |
 | 1 | RecipeComponent 缓存 SlimefunItem 解析（最热路径） | ✅ | [01-recipe-component-cache.md](01-recipe-component-cache.md) |
-| 2 | LootTable.generate（整数随机 + 数组索引，去 FP） | ⏳ | — |
-| 3 | NumberUtil.asRomanNumeral（静态化常量数组，去分配） | ⏸ | — |
+| 2 | LootTable.generate（数组索引 + 整数随机 + 满桶跳过） | ✅ | [02-loottable-generate.md](02-loottable-generate.md) |
+| 3 | NumberUtil.asRomanNumeral（静态化常量数组，去分配） | ⏳ | — |
 | 4 | GastroWorkstation 合成路径分配（去 stream/toList） | ⏸ | — |
 | 5 | 机器 ticker / 监听器 / Counter 等 | ⏸ | — |
 

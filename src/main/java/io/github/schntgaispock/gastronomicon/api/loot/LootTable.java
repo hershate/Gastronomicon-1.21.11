@@ -3,7 +3,6 @@ package io.github.schntgaispock.gastronomicon.api.loot;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.github.schntgaispock.gastronomicon.util.collections.Pair;
@@ -21,7 +20,11 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class LootTable<T> {
 
-    private final List<T> drops;
+    // [perf] drops 改为数组：generate() 直接索引，避免 List.get 的方法派发+边界检查，
+    // 且去掉一次 ThreadLocalRandom.current() 与 nextDouble()*totalWeight 的浮点乘。
+    // 等价性：nextInt(totalWeight) < prob[roll] 与原 nextDouble()*totalWeight < prob[roll]
+    // 在 totalWeight>0 时分布恒等（且为别名法的精确离散形式）。
+    private final T[] drops;
     private final int totalWeight;
     private final int[] prob;
     private final int[] alias;
@@ -85,7 +88,9 @@ public class LootTable<T> {
                 prob[small.pop().second()] = totalWeight;
             }
 
-            return new LootTable<T>(weightedDrops.keySet().stream().toList(), totalWeight, prob, alias);
+            @SuppressWarnings("unchecked")
+            final T[] dropsArr = weightedDrops.keySet().toArray((T[]) new Object[weightedDrops.size()]);
+            return new LootTable<T>(dropsArr, totalWeight, prob, alias);
         }
 
     }
@@ -99,24 +104,33 @@ public class LootTable<T> {
     }
 
     public T generate() {
-        if (drops.size() == 0) {
+        final T[] d = drops;
+        final int n = d.length;
+        if (n == 0) {
             return null;
         }
-        
-        final int roll = ThreadLocalRandom.current().nextInt(drops.size());
-        if (ThreadLocalRandom.current().nextDouble() * totalWeight < prob[roll]) {
-            return drops.get(roll);
-        } else {
-            return drops.get(alias[roll]);
+        final int tw = totalWeight;
+        // 退化（全零权重）：旧实现恒走 alias 分支返回 drops[0]，保持一致
+        if (tw <= 0) {
+            return d[0];
         }
+        final ThreadLocalRandom r = ThreadLocalRandom.current();
+        final int roll = r.nextInt(n);
+        final int p = prob[roll];
+        // 满概率桶（prob==totalWeight，别名法对高权重项常见）：原比较 nextDouble()*tw<tw 恒真，
+        // 故第二次随机抽取纯冗余，跳过。等价且对偏斜掉落表（渔网/陷阱常见一个主导掉落）收益更大。
+        if (p >= tw) {
+            return d[roll];
+        }
+        return r.nextInt(tw) < p ? d[roll] : d[alias[roll]];
     }
 
     public int size() {
-        return drops.size();
+        return drops.length;
     }
 
     public boolean isEmpty() {
-        return drops.isEmpty();
+        return drops.length == 0;
     }
 
 }

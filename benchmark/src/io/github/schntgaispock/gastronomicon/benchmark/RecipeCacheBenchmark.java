@@ -19,7 +19,7 @@ public final class RecipeCacheBenchmark {
     static final int RECIPES = 200;          // 配方数
     static final int SLOTS = 4;              // 每配方平均非空原料槽数
     static final int DISTINCT = 800;         // 去重后不同原料模板数（<= RECIPES*SLOTS）
-    static final int OPS = 10_000;           // findRecipe 操作次数
+    static final int OPS = 2_000;            // 每轮 findRecipe 操作次数（外层）
     static final double SF_RATIO = 0.30;     // 30% 模板为 SF 物品（getByItem 返回非 null）
 
     /** 模拟一次 findRecipe：遍历全部 R 个配方，每个配方检查 SLOTS 个槽 → 共 R*SLOTS 次 matches。 */
@@ -106,7 +106,7 @@ public final class RecipeCacheBenchmark {
             // BEFORE 计时
             resolverCalls.set(0);
             BenchmarkHarness.Result before = BenchmarkHarness.measure(
-                "BEFORE (每次解析)", OPS, () -> {
+                "BEFORE (每次解析)", OPS, MATCHES_PER_OP, () -> {
                     long acc = 0;
                     for (int r = 0; r < RECIPES; r++) {
                         int[] ks = recipeKeys[r];
@@ -120,7 +120,7 @@ public final class RecipeCacheBenchmark {
             for (int r = 0; r < RECIPES; r++) for (int s = 0; s < SLOTS; s++) matchAfter(recipeCached[r][s], t, map);
             resolverCalls.set(0);
             BenchmarkHarness.Result after = BenchmarkHarness.measure(
-                "AFTER  (惰性缓存)", OPS, () -> {
+                "AFTER  (惰性缓存)", OPS, MATCHES_PER_OP, () -> {
                     long acc = 0;
                     for (int r = 0; r < RECIPES; r++) {
                         Cached[] cs = recipeCached[r];
