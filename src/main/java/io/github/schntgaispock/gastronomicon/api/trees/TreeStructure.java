@@ -1,18 +1,22 @@
 package io.github.schntgaispock.gastronomicon.api.trees;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.github.schntgaispock.gastronomicon.Gastronomicon;
 import io.github.schntgaispock.gastronomicon.util.NumberUtil;
@@ -26,10 +30,26 @@ import lombok.ToString;
 @ToString
 public final class TreeStructure {
 
-    private static final ObjectMapper JSONObjectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+    // 1.1.6: jackson -> GSON（Paper 服务端自带 com.google.gson），不再 shaded 外部依赖。
+    // 用自定义 JsonDeserializer 显式调用构造器，保留 fruitTexture 的派生逻辑与 final 字段。
+    private static final Gson GSON = new GsonBuilder()
+        .registerTypeAdapter(TreeStructure.class, (JsonDeserializer<TreeStructure>) TreeStructure::deserialize)
+        .create();
+
     private static final String TREE_SCHEMATIC_PATH = "plugins/Gastronomicon/schematics/";
 
     private static final @Getter Map<String, TreeStructure> loadedTrees = new HashMap<>();
+
+    private static TreeStructure deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext ctx) {
+        final JsonObject o = json.getAsJsonObject();
+        return new TreeStructure(
+            ctx.deserialize(o.get("blocks"), int[][][].class),
+            o.has("sapling") ? o.get("sapling").getAsString() : null,
+            o.has("fruit") ? o.get("fruit").getAsString() : null,
+            ctx.deserialize(o.get("palette"), String[].class),
+            ctx.deserialize(o.get("root"), int[].class)
+        );
+    }
 
     public static void loadTrees() {
         final File treePath = new File(TREE_SCHEMATIC_PATH);
@@ -48,8 +68,8 @@ public final class TreeStructure {
             if (!treeFile.isFile()) {
                 continue;
             }
-            try {
-                final TreeStructure tree = JSONObjectMapper.readValue(treeFile, TreeStructure.class);
+            try (FileReader reader = new FileReader(treeFile)) {
+                final TreeStructure tree = GSON.fromJson(reader, TreeStructure.class);
                 if (tree == null || tree.getSapling() == null) {
                     continue;
                 }
@@ -70,13 +90,7 @@ public final class TreeStructure {
     private final int[] root; // [x, z]
     private final String fruitTexture;
 
-    public TreeStructure(
-        @JsonProperty("blocks") int[][][] blocks,
-        @JsonProperty("sapling") String sapling,
-        @JsonProperty("fruit") String fruit,
-        @JsonProperty("palette") String[] palette,
-        @JsonProperty("root") int[] root
-    ) {
+    public TreeStructure(int[][][] blocks, String sapling, String fruit, String[] palette, int[] root) {
         this.blocks = blocks;
         this.sapling = sapling;
         this.fruit = fruit;
