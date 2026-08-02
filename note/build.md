@@ -105,7 +105,7 @@ REF 基于官方 experimental 分支，与汉化组版本存在深度 API 差异
 
 剩余遗留项：
 
-- **FoodEffect.java**：4 处 deprecation 警告（GuizhanLibPlugin 的 `PotionEffectTypeHelper`、`ItemStackHelper` 已标记为 deprecated），不影响编译，待 GuizhanLibPlugin 升级后处理。
+- ~~**FoodEffect.java**：4 处 deprecation 警告（GuizhanLibPlugin 的 `PotionEffectTypeHelper`、`ItemStackHelper`）~~ — **1.1.5 已彻底解决**：鬼斩前置库运行期依赖整体移除，相关 import 与 API 调用全部内联（见 [release/1.1.5.md](release/1.1.5.md)），不再有此类警告。
 - **运行时风险点**（未验证，需在服务器中实测）：
   - `BlockStorage.store(Block, String)` 是否等价于原 `NewBlockStorageUtil.createBlock` 的行为（树木果实方块、种子放置、种子传播）。
   - `SlimefunItem.getByItem(component)` 在 `SingleRecipeComponent`/`GroupRecipeComponent` 中匹配是否与原 `instanceof SlimefunItemStack` 语义一致。

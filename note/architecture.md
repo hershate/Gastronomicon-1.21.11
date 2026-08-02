@@ -7,7 +7,7 @@
 
 - **定位**：粘液科技 (Slimefun) 的食物主题附属插件，新增大量食材、料理、烹饪工作站与作物/种子系统。
 - **基座**：基于 [InfinityLib](https://github.com/mooy1/infinitylib) 的 `AbstractAddon` / `MenuBlock` 开发。
-- **版本**：`1.1.4`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本，改动见 [release/1.1.4.md](release/1.1.4.md)。
+- **版本**：`1.1.5`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本（[release/1.1.4.md](release/1.1.4.md)）；**1.1.5** 为关键修复版本——移除 GuizhanLibPlugin 运行期依赖、修复加载期 `NoClassDefFoundError`（[release/1.1.5.md](release/1.1.5.md)）。
 - **当前主线工作**：将本附属适配至 Minecraft `1.21.11`，参考源码位于 [REF/Slimefun4.1](../REF/Slimefun4.1)（非官方维护分支，版本 `4.9.5`，**只读，不得修改**）。
 
 ## 2. 环境与依赖
@@ -15,7 +15,7 @@
 | 依赖 | 关系 | 说明 |
 |---|---|---|
 | `Slimefun` | 硬依赖 | 必需 |
-| `GuizhanLibPlugin`（鬼斩前置库） | 硬依赖 | [Gastronomicon.java](../src/main/java/io/github/schntgaispock/gastronomicon/Gastronomicon.java#L52-L57) 启动时强校验，缺失则禁用插件 |
+| ~~`GuizhanLibPlugin`（鬼斩前置库）~~ | ~~硬依赖~~ | **1.1.5 已移除**。原 4 处用法（`Scheduler`/`GuizhanUpdater`/`ItemStackHelper`/`PotionEffectTypeHelper`）全部内联等价实现，插件自包含、与服务器鬼斩前置库版本无关。详见 [release/1.1.5.md](release/1.1.5.md) |
 | `ExoticGarden`（异域花园） | 软依赖 | 提供部分原料（橙子/番茄/蒜…），缺失时自动隐藏相关配方 |
 | `DynaTech`（动力科技） | 软依赖 | 自动化作物培育，**默认禁用**（见 [config.yml](../src/main/resources/config.yml#L9) 与 commit `97d7f69`，因不兼容） |
 | `SlimeHUD` | 软依赖 | HUD 展示，版本不兼容时静默跳过 |
@@ -58,15 +58,15 @@ src/main/java/io/github/schntgaispock/gastronomicon/
 
 ## 4. 启动流程
 
-[Gastronomicon.enable()](../src/main/java/io/github/schntgaispock/gastronomicon/Gastronomicon.java#L48-L112) 顺序：
+[Gastronomicon.enable()](../src/main/java/io/github/schntgaispock/gastronomicon/Gastronomicon.java#L48-L112) 顺序（1.1.5 起）：
 
-1. 校验 `GuizhanLibPlugin`（缺失即禁用）。
-2. 可选启动 `GuizhanUpdater` 自动更新（仅 `Build` 开头版本）。
-3. 初始化 bstats 指标。
-4. 依次调用：`ItemSetup.setup()` → `ResearchSetup.setup()` → `ListenerSetup.setup()` → `CommandSetup.setup()`。
-5. 软依赖集成（`SlimeHUDSetup` / `DynaTechSetup`），用 try-catch 包裹，版本不兼容仅告警。
-6. 加载 `player.yml`（玩家档案）、`custom-food.yml`（自定义食物）。
-7. `TreeStructure.loadTrees()` 加载树木结构。
+1. 初始化 bstats 指标。
+2. 依次调用：`ItemSetup.setup()` → `ResearchSetup.setup()` → `ListenerSetup.setup()` → `CommandSetup.setup()`。
+3. 软依赖集成（`SlimeHUDSetup` / `DynaTechSetup`），用 try-catch 包裹，版本不兼容仅告警。
+4. 加载 `player.yml`（玩家档案）、`custom-food.yml`（自定义食物）。
+5. `TreeStructure.loadTrees()` 加载树木结构。
+
+> 1.1.4 及之前曾在此处「校验 GuizhanLibPlugin」与「可选启动 GuizhanUpdater」；1.1.5 移除鬼斩前置库依赖后两步不复存在（见 [release/1.1.5.md](release/1.1.5.md)）。
 
 ## 5. 核心子系统
 
