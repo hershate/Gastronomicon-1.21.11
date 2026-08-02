@@ -12,3 +12,7 @@ dependency-reduced-pom.xml
 eclipse-formatter.xml
 *.py
 /REF
+
+# benchmark 本地构建产物（源码 benchmark/src 入库，产物不入库）
+/benchmark/build/
+/benchmark/cp.txt
