@@ -7,7 +7,7 @@
 
 - **定位**：粘液科技 (Slimefun) 的食物主题附属插件，新增大量食材、料理、烹饪工作站与作物/种子系统。
 - **基座**：基于 [InfinityLib](https://github.com/mooy1/infinitylib) 的 `AbstractAddon` / `MenuBlock` 开发。
-- **版本**：`1.1.6`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本（[release/1.1.4.md](release/1.1.4.md)）；1.1.5 移除 GuizhanLibPlugin 运行期依赖、修复加载期 `NoClassDefFoundError`（[release/1.1.5.md](release/1.1.5.md)）；**1.1.6** 移除全部外部依赖（vendor InfinityLib、jackson→GSON、剥离 jsr305），仅依赖 Slimefun + Paper 服务端 API（[release/1.1.6.md](release/1.1.6.md)）。
+- **版本**：`1.2.0`（见 [pom.xml](../pom.xml#L8)）。1.1.4 为逻辑/稳定性/安全性修复版本（[release/1.1.4.md](release/1.1.4.md)）；1.1.5 移除 GuizhanLibPlugin 运行期依赖、修复加载期 `NoClassDefFoundError`（[release/1.1.5.md](release/1.1.5.md)）；**1.1.6** 移除全部外部依赖（vendor InfinityLib、jackson→GSON、剥离 jsr305），仅依赖 Slimefun + Paper 服务端 API（[release/1.1.6.md](release/1.1.6.md)）；**1.2.0** 为纯性能优化（行为等价，7 轮基准驱动，详见 [release/1.2.0.md](release/1.2.0.md) 与 [report/perf/PROGRESS.md](report/perf/PROGRESS.md)）。
 - **当前主线工作**：将本附属适配至 Minecraft `1.21.11`，参考源码位于 [REF/Slimefun4.1](../REF/Slimefun4.1)（非官方维护分支，版本 `4.9.5`，**只读，不得修改**）。
 
 ## 2. 环境与依赖
