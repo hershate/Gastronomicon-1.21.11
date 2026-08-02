@@ -68,7 +68,29 @@ public class ElectricKitchen extends AContainer {
     // AContainer 的 BlockTicker.isSynchronized() 为 false，ElectricKitchen 的 tick 在
     // Slimefun TickerTask 的异步线程上执行；而 onBlockBreak 在主线程。两者并发访问该缓存，
     // 必须使用并发安全实现，否则 HashMap 在并发 put/remove 下可能丢条目甚至损坏。
-    private static Map<Location, Pair<Integer, Counter<Integer>>> lastInputHashAndRecipe = new ConcurrentHashMap<>();
+    private static Map<Location, CacheEntry> lastInputHashAndRecipe = new ConcurrentHashMap<>();
+
+    /**
+     * [perf] 每方块缓存：上次的输入哈希、命中的槽位 Counter，以及每槽的物品引用 + 该引用的哈希。
+     * <p>
+     * {@code ItemUtil.hashIgnoreAmount(slot)} 的开销几乎全在 {@code getItemMeta()}（克隆 meta）。
+     * 经核验 {@code menu.getItemInSlot(slot)} 返回库存内<strong>同一引用</strong>（REF
+     * {@code ChestMenu.getItemInSlot → inv.getItem}），且输入槽食材在两次 tick 间不会被原地改 meta
+     * （consumeItem 只改 amount 或替换整个物品；食材无耐久/附魔等 meta 变化；hashIgnoreAmount 忽略 amount）。
+     * 故「引用未变 ⇒ (type+meta) 哈希未变」：tick 间复用缓存哈希、跳过 getItemMeta。引用变了（玩家取放/
+     * 物流替换）则 {@code ==} 失败自动重算。每方块每 tick 由 TickerTask 单线程访问，数组无需额外同步；
+     * Map 用 ConcurrentHashMap 保证并发 put/remove/get 安全。
+     */
+    private static final class CacheEntry {
+        int hash;
+        Counter<Integer> found;
+        final ItemStack[] slotRefs;
+        final int[] slotHashes;
+        CacheEntry(int slotCount) {
+            slotRefs = new ItemStack[slotCount];
+            slotHashes = new int[slotCount];
+        }
+    }
 
     private final EnergyNetComponentType energyComponentType = EnergyNetComponentType.CONSUMER;
     private final String machineIdentifier = "GN_ELECTRIC_KITCHEN";
@@ -216,22 +238,30 @@ public class ElectricKitchen extends AContainer {
         // （用便宜食物原料 + 换昂贵食物机器人 -> 产出昂贵食物）。
         // [perf] getInputSlots() 每次返回 new int[]；findNextRecipe 每 tick 调用，取一次复用于哈希与匹配两处循环。
         final int[] inputSlots = getInputSlots();
-        int hash = foodId.hashCode();
-        for (int slot : inputSlots) {
-            hash = hash * 31 + ItemUtil.hashIgnoreAmount(menu.getItemInSlot(slot));
+        CacheEntry entry = lastInputHashAndRecipe.get(menu.getLocation());
+        if (entry == null) {
+            entry = new CacheEntry(inputSlots.length);
+            lastInputHashAndRecipe.put(menu.getLocation(), entry);
         }
 
-        final Pair<Integer, Counter<Integer>> hashRecipePair;
-        if (lastInputHashAndRecipe.containsKey(menu.getLocation())) {
-            hashRecipePair = lastInputHashAndRecipe.get(menu.getLocation());
-        } else {
-            hashRecipePair = new Pair<Integer, Counter<Integer>>(0, null);
-            lastInputHashAndRecipe.put(menu.getLocation(), hashRecipePair);
+        // [perf] 引用缓存：槽位物品引用未变（==）则复用上次的 hashIgnoreAmount，跳过 getItemMeta()。
+        // 安全性论证见 CacheEntry 注释（getItemInSlot 返回同一引用 + 输入槽食材无原地 meta 变更）。
+        int hash = foodId.hashCode();
+        for (int i = 0; i < inputSlots.length; i++) {
+            final ItemStack cur = menu.getItemInSlot(inputSlots[i]);
+            if (cur == entry.slotRefs[i]) {
+                hash = hash * 31 + entry.slotHashes[i];
+            } else {
+                final int sh = ItemUtil.hashIgnoreAmount(cur);
+                entry.slotRefs[i] = cur;
+                entry.slotHashes[i] = sh;
+                hash = hash * 31 + sh;
+            }
         }
 
         final Counter<Integer> found;
-        if (hashRecipePair.first() == hash) {
-            found = hashRecipePair.second();
+        if (entry.hash == hash) {
+            found = entry.found;
         } else {
             found = new Counter<>();
             for (RecipeComponent<?> component : recipe.getInputs().getAll()) {
@@ -252,8 +282,8 @@ public class ElectricKitchen extends AContainer {
                 }
             }
 
-            hashRecipePair.first(hash);
-            hashRecipePair.second(found);
+            entry.hash = hash;
+            entry.found = found;
         }
 
         // 输出空间检查：输出满时不消耗原料，避免操作完成后产物被 pushItem
@@ -273,8 +303,8 @@ public class ElectricKitchen extends AContainer {
             final ItemStack input = menu.getItemInSlot(pair.first());
             if (input == null || input.getAmount() < pair.second()) {
                 // 原料已被取走或不足：作废缓存命中，下 tick 重新匹配（不消耗任何原料）
-                hashRecipePair.first(0);
-                hashRecipePair.second(null);
+                entry.hash = 0;
+                entry.found = null;
                 return null;
             }
         }

@@ -41,20 +41,20 @@
 | 3 | NumberUtil/FoodEffect 数学与分配清理（含 teleport Math.pow 循环不变量） | ✅ | [03-numberutil-food-math.md](03-numberutil-food-math.md) |
 | 4 | 合成路径分配（stream→loop）+ ElectricKitchen getInputSlots 复用 | ✅ | [04-craft-path-allocations.md](04-craft-path-allocations.md) |
 | 5 | Counter.add 查找 4→1 + WildHarvest map 查找去重 | ✅ | [05-counter-listener-lookups.md](05-counter-listener-lookups.md) |
-| 6 | HuntingTrap.tick getLocation() 分配 + 剩余路径巡检 → **收口** | ✅ | [06-ticker-allocations-survey.md](06-ticker-allocations-survey.md) |
+| 6 | HuntingTrap.tick getLocation() 分配 + 剩余路径巡检 | ✅ | [06-ticker-allocations-survey.md](06-ticker-allocations-survey.md) |
+| 7 | ElectricKitchen 每 tick 输入哈希引用缓存（源码证安全） | ✅ | [07-electrickitchen-hash-cache.md](07-electrickitchen-hash-cache.md) |
+| 8 | 继续深挖（GastroFood 消费路径 / 种子 ticker / 配方索引 等） | ⏳ | — |
 
-## 收口状态
+## 状态
 
-**离线可基准、行为可证等价的优化面已系统覆盖（Round 0–6）。** 版本 `1.1.6 → 1.2.0`，合并 release note [../release/1.2.0.md](../release/1.2.0.md)。
+Round 7 完成了此前列为「需服务端验证」的最大单项项 —— 本轮从 REF 源码证明了 `getItemInSlot` 返回同一引用 +
+输入槽食材无原地 meta 变更，故引用缓存**可证安全**并已实施。版本维持 `1.2.0`（未发布，Round 7 并入），
+合并 release note [../release/1.2.0.md](../release/1.2.0.md)。**继续深挖其余可优化面。**
 
-### 唯一未闭合项（需服务端验证，离线无法安全闭合）
+### 残留理论风险（已记录，非阻塞）
 
-**`ElectricKitchen.findNextRecipe` 每 tick 的 `getItemMeta().hashCode()` 哈希**（每方块每 tick 9 次 meta 克隆+哈希）。
-优化方案：缓存 `(slot → 上次 ItemStack 引用, 上次哈希)`，引用未变则复用哈希、跳过 getItemMeta。
-**前提**（均需服务端 Probe 实测确认）：
-1. `BlockMenu.getItemInSlot(slot)` 在槽位未变时返回**同一引用**（否则缓存永不命中，无收益但不影响正确性）；
-2. 槽位物品不会被**原地改 meta**（`setItemMeta` 不换引用）——否则缓存键过期会导致合成错配/刷物（红线）。
-确认后按 Round 1 的 volatile 惰性缓存范式实施，预期为该路径的最大单项收益。
+第三方插件对电厨食材槽物品调用 `setItemMeta` 原地改 meta（不换引用）会使 Round 7 缓存键过期。
+对食材槽这在实践中不发生；若将来确证存在，加周期性强制重算兜底即可。
 
 ### 量化总览（各轮最佳结果）
 
@@ -66,6 +66,7 @@
 | 4 | 合成路径 stream→loop | craft-collect 3.36× |
 | 5 | Counter.add 查找 4→1 | 1.77× |
 | 6 | HuntingTrap.tick getLocation() 缓存 | 1.86×（stub；真实节省更大） |
+| 7 | ElectricKitchen 每 tick 哈希引用缓存 | 稳态 **~130×**（435.9→3.4 ns/tick）；getItemMeta 调用 9→0 |
 
 > ⏳进行中 ⏸待办 ✅完成 ❌放弃（注明原因）
 
