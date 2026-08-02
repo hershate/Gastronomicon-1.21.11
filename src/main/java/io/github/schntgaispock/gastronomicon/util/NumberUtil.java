@@ -18,14 +18,20 @@ public class NumberUtil {
         return Math.min(Math.max(x, lowerBound), upperBound);
     }
 
+    // [perf] 罗马数字查表常量：原实现每次调用分配 4 个 String[]。这些表恒定，提为 static final。
+    private static final String[] RN_THOUSANDS = { "", "M", "MM", "MMM" };
+    private static final String[] RN_HUNDREDS =
+        { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
+    private static final String[] RN_TENS =
+        { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
+    private static final String[] RN_ONES =
+        { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
+
     public static String asRomanNumeral(int x) {
         if (x >= 4000 || x <= 0)
             return Integer.toString(x);
-        String[] thousands = { "", "M", "MM", "MMM" };
-        String[] hundreds = { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
-        String[] tens = { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
-        String[] ones = { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
-        return thousands[x / 1000] + hundreds[(x / 100) % 10] + tens[(x / 10) % 10] + ones[x % 10];
+        return RN_THOUSANDS[x / 1000] + RN_HUNDREDS[(x / 100) % 10]
+            + RN_TENS[(x / 10) % 10] + RN_ONES[x % 10];
     }
 
     public static boolean flip(double chance) {
@@ -42,8 +48,25 @@ public class NumberUtil {
     }
 
     public static double roundToPrecision(double x, int precision) {
-        final double magn = Math.pow(10, precision);
+        final double magn = pow10(precision);
         return Math.round(x * magn) / magn;
+    }
+
+    /**
+     * [perf] 10 的幂：常用 precision 为 0..4，用 switch 常量取代 Math.pow（后者约 20-40ns/次）。
+     * 异常 precision 回退 Math.pow，行为不变。本方法用于 FoodEffect/FoodItemStack 描述构造。
+     */
+    private static double pow10(int precision) {
+        return switch (precision) {
+            case 0 -> 1.0;
+            case 1 -> 10.0;
+            case 2 -> 100.0;
+            case 3 -> 1_000.0;
+            case 4 -> 10_000.0;
+            case 5 -> 100_000.0;
+            case 6 -> 1_000_000.0;
+            default -> Math.pow(10, precision);
+        };
     }
 
     public static double roundToPercent(double x, int precision) {

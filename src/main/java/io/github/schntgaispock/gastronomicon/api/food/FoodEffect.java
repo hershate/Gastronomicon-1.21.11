@@ -525,9 +525,12 @@ public class FoodEffect {
                 final int playerY = playerLocation.getBlockY();
                 final int playerZ = playerLocation.getBlockZ();
                 final int teleportRadius = isPerfect ? pr : r;
+                // [perf] 原循环每次迭代都重算 Math.pow(r, 3)（循环不变量），且 r 为 [1,10] 整数，
+                // r^3 用整数乘法精确等价。提至循环外并用 int 乘替代 Math.pow（每次食用传送食物触发）。
+                final int maxTries = 10 + r * r * r;
                 // Performs 10 + radius^3 tries, if it can't find a safe spot to teleport to, it
                 // stops.
-                for (int i = 0; i < 10 + Math.pow(r, 3); i++) {
+                for (int i = 0; i < maxTries; i++) {
                     final int newX = playerX + NumberUtil.getRandom().nextInt(teleportRadius);
                     final int newY = playerY + NumberUtil.getRandom().nextInt(teleportRadius);
                     final int newZ = playerZ + NumberUtil.getRandom().nextInt(teleportRadius);

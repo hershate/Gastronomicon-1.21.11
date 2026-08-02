@@ -38,8 +38,8 @@
 | 0 | 基准设施 + Probe + 纯 JVM 基线 | ✅ | [00-baseline-and-methodology.md](00-baseline-and-methodology.md) |
 | 1 | RecipeComponent 缓存 SlimefunItem 解析（最热路径） | ✅ | [01-recipe-component-cache.md](01-recipe-component-cache.md) |
 | 2 | LootTable.generate（数组索引 + 整数随机 + 满桶跳过） | ✅ | [02-loottable-generate.md](02-loottable-generate.md) |
-| 3 | NumberUtil.asRomanNumeral（静态化常量数组，去分配） | ⏳ | — |
-| 4 | GastroWorkstation 合成路径分配（去 stream/toList） | ⏸ | — |
+| 3 | NumberUtil/FoodEffect 数学与分配清理（含 teleport Math.pow 循环不变量） | ✅ | [03-numberutil-food-math.md](03-numberutil-food-math.md) |
+| 4 | GastroWorkstation 合成路径分配（去 stream/toList） | ⏳ | — |
 | 5 | 机器 ticker / 监听器 / Counter 等 | ⏸ | — |
 
 > ⏳进行中 ⏸待办 ✅完成 ❌放弃（注明原因）
