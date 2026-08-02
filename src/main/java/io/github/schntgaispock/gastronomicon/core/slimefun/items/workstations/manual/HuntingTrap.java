@@ -70,20 +70,24 @@ public abstract class HuntingTrap extends SimpleSlimefunItem<BlockUseHandler> {
 
             @Override
             public void tick(Block b, SlimefunItem item, Config config) {
-                if (triggeredTraps.containsKey(b.getLocation())) {
-                    if (triggeredTraps.get(b.getLocation())) {
+                // [perf] b.getLocation() 每次返回新 Location；原 tick 调用 ~5 次（containsKey/get/三坐标）。
+                // 缓存为 local 复用，并把 containsKey+get 合并为单次 get。每个陷阱每 tick 触发。
+                final Location l = b.getLocation();
+                final Boolean triggered = triggeredTraps.get(l);
+                if (triggered != null) {
+                    if (triggered) {
                         b.getWorld().spawnParticle(
                             Particle.WAX_OFF,
-                            b.getLocation().getX() + 0.5,
-                            b.getLocation().getY() + 0.25,
-                            b.getLocation().getZ() + 0.5,
+                            l.getX() + 0.5,
+                            l.getY() + 0.25,
+                            l.getZ() + 0.5,
                             4,
                             0.2, 0.05, 0.2, 0,
                             null,
                             true);
                     }
                 } else {
-                    startCatch(b.getLocation());
+                    startCatch(l);
                 }
             }
 

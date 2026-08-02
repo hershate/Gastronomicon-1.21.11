@@ -41,7 +41,31 @@
 | 3 | NumberUtil/FoodEffect 数学与分配清理（含 teleport Math.pow 循环不变量） | ✅ | [03-numberutil-food-math.md](03-numberutil-food-math.md) |
 | 4 | 合成路径分配（stream→loop）+ ElectricKitchen getInputSlots 复用 | ✅ | [04-craft-path-allocations.md](04-craft-path-allocations.md) |
 | 5 | Counter.add 查找 4→1 + WildHarvest map 查找去重 | ✅ | [05-counter-listener-lookups.md](05-counter-listener-lookups.md) |
-| 6 | 巡检剩余路径（发酵/磨坊/冰箱/树木/种子 ticker 等）→ 收口 | ⏳ | — |
+| 6 | HuntingTrap.tick getLocation() 分配 + 剩余路径巡检 → **收口** | ✅ | [06-ticker-allocations-survey.md](06-ticker-allocations-survey.md) |
+
+## 收口状态
+
+**离线可基准、行为可证等价的优化面已系统覆盖（Round 0–6）。** 版本 `1.1.6 → 1.2.0`，合并 release note [../release/1.2.0.md](../release/1.2.0.md)。
+
+### 唯一未闭合项（需服务端验证，离线无法安全闭合）
+
+**`ElectricKitchen.findNextRecipe` 每 tick 的 `getItemMeta().hashCode()` 哈希**（每方块每 tick 9 次 meta 克隆+哈希）。
+优化方案：缓存 `(slot → 上次 ItemStack 引用, 上次哈希)`，引用未变则复用哈希、跳过 getItemMeta。
+**前提**（均需服务端 Probe 实测确认）：
+1. `BlockMenu.getItemInSlot(slot)` 在槽位未变时返回**同一引用**（否则缓存永不命中，无收益但不影响正确性）；
+2. 槽位物品不会被**原地改 meta**（`setItemMeta` 不换引用）——否则缓存键过期会导致合成错配/刷物（红线）。
+确认后按 Round 1 的 volatile 惰性缓存范式实施，预期为该路径的最大单项收益。
+
+### 量化总览（各轮最佳结果）
+
+| 轮 | 优化 | 基准结果 |
+|---|---|---|
+| 1 | RecipeComponent 缓存 getByItem | getByItem 调用稳态 100% 消除；findRecipe 墙钟 5.3–6.1× |
+| 2 | LootTable.generate | 分布逐位恒等；小表/均衡表 2.3–2.5×，大表持平 |
+| 3 | roundToPrecision / asRomanNumeral / teleport Math.pow | 6.45× / 1.25× / 解析性（运行期） |
+| 4 | 合成路径 stream→loop | craft-collect 3.36× |
+| 5 | Counter.add 查找 4→1 | 1.77× |
+| 6 | HuntingTrap.tick getLocation() 缓存 | 1.86×（stub；真实节省更大） |
 
 > ⏳进行中 ⏸待办 ✅完成 ❌放弃（注明原因）
 
