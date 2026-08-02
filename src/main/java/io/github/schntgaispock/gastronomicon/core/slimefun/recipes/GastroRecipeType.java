@@ -1,6 +1,5 @@
 package io.github.schntgaispock.gastronomicon.core.slimefun.recipes;
 
-import javax.annotation.Nonnull;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +21,7 @@ public class GastroRecipeType extends RecipeType {
     public static final GastroRecipeType MILL = new GastroRecipeType("mill", GastroStacks.GUIDE_RECIPE_MILL);
     public static final GastroRecipeType FERMENTER = new GastroRecipeType("fermenter", GastroStacks.GUIDE_RECIPE_FERMENTER);
 
-    public GastroRecipeType(@Nonnull String key, ItemStack item) {
+    public GastroRecipeType(String key, ItemStack item) {
         super(Gastronomicon.key(key), item);
     }
 

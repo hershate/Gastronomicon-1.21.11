@@ -3,7 +3,6 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.food;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -56,7 +55,7 @@ public class GastroFood extends SimpleGastroFood {
         super.preRegister();
     }
 
-    public void onRightClick(@Nonnull PlayerRightClickEvent e) {
+    public void onRightClick(PlayerRightClickEvent e) {
         if (e.getPlayer().getFoodLevel() >= 20) {
             e.cancel();
             return; // Can't eat when full
@@ -98,7 +97,7 @@ public class GastroFood extends SimpleGastroFood {
      * Will create a hidden perfect version of itself if not already perfect.
      */
     @Override
-    public void register(@Nonnull SlimefunAddon addon) {
+    public void register(SlimefunAddon addon) {
         super.register(addon);
         if (!isPerfect()) {
             getGastroFoodIds().add(getId());

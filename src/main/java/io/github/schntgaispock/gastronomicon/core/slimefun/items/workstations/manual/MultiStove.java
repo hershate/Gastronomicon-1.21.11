@@ -3,8 +3,6 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.m
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.ChatColor;
@@ -43,7 +41,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
 
         private final @Getter String text;
 
-        public static @Nonnull Temperature fromText(String text) {
+        public static Temperature fromText(String text) {
             for (Temperature temp : values()) {
                 if (temp.getText().equals(text)) {
                     return temp;
@@ -52,7 +50,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
             throw new IllegalArgumentException(text + " is now a valid value");
         }
 
-        public @Nullable Temperature next() {
+        public Temperature next() {
             if (ordinal() == values().length - 1) {
                 return null;
             }
@@ -60,7 +58,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
             return values()[ordinal() + 1];
         }
 
-        public @Nullable Temperature prev() {
+        public Temperature prev() {
             if (ordinal() == 0) {
                 return null;
             }
@@ -148,7 +146,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
         });
     }
 
-    public static void changeTemperature(@Nonnull BlockMenu menu, @Nullable Temperature t) {
+    public static void changeTemperature(BlockMenu menu, Temperature t) {
         if (t == null) {
             return;
         }
@@ -167,7 +165,7 @@ public class MultiStove extends GastroWorkstation implements EnergyNetComponent 
     }
 
     @Override
-    @Nullable
+    
     protected GastroRecipe findRecipe(ItemStack[] ingredients, List<ItemStack> containers, List<ItemStack> tools,
         Player player, BlockMenu menu) {
         final ItemStack tempButton = menu.getItemInSlot(TEMPERATURE_BUTTON_SLOT);

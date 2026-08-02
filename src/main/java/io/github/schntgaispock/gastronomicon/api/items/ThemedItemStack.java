@@ -1,7 +1,5 @@
 package io.github.schntgaispock.gastronomicon.api.items;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,30 +10,27 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 
 public class ThemedItemStack extends SlimefunItemStack {
 
-    @ParametersAreNonnullByDefault
     protected ThemedItemStack(String id, Material material, String name, String... lore) {
         super(id, material, name, lore);
     }
 
-    @ParametersAreNonnullByDefault
     protected ThemedItemStack(String id, String texture, String name, String... lore) {
         super(id, texture, name, lore);
     }
 
     @Override
-    public @Nonnull Material getType() {
+    public Material getType() {
         Material type = super.getType();
         return (type == null) ? Material.BARRIER : type;
     }
 
     @Override
-    public @Nonnull String getDisplayName() {
+    public String getDisplayName() {
         // 必须调用 super.getDisplayName()，原先误写为 getDisplayName() 会无限递归 → StackOverflowError。
         final String name = super.getDisplayName();
         return (name == null || name.isEmpty()) ? "名称丢失" : name;
     }
 
-    @ParametersAreNonnullByDefault
     public static ThemedItemStack of(GastroTheme theme, String id, Material material, String name, String... lore) {
         if (id == null || material == null) return null;
         if (lore.length > 0) {
@@ -52,7 +47,6 @@ public class ThemedItemStack extends SlimefunItemStack {
         }
     }
 
-    @ParametersAreNonnullByDefault
     public static ThemedItemStack of(GastroTheme theme, String id, String texture, String name, String... lore) {
         if (id == null || texture == null) return null;
         if (lore.length > 0) {
@@ -69,12 +63,10 @@ public class ThemedItemStack extends SlimefunItemStack {
         }
     }
 
-    @ParametersAreNonnullByDefault
     public static ThemedItemStack ingredient(String id, Material material, String name, String... lore) {
         return of(GastroTheme.INGREDIENT, id, material, name, lore);
     }
 
-    @ParametersAreNonnullByDefault
     public static ThemedItemStack ingredient(String id, String texture, String name, String... lore) {
         return of(GastroTheme.INGREDIENT, id, texture, name, lore);
     }

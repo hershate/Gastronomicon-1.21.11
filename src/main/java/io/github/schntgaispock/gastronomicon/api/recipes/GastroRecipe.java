@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNullableByDefault;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -125,7 +123,7 @@ public abstract class GastroRecipe {
      *            (empty bottles, bowls, etc.).
      */
     public GastroRecipe(GastroRecipeType recipeType, RecipeShape recipeShape, ItemStack[] ingredients,
-        @Nullable ItemStack container, Set<ItemStack> tools, ItemStack... outputs) {
+        ItemStack container, Set<ItemStack> tools, ItemStack... outputs) {
         this(recipeType,
             new RecipeInput(recipeShape,
                 container == null ? RecipeComponent.EMPTY : new SingleRecipeComponent(container),
@@ -210,7 +208,6 @@ public abstract class GastroRecipe {
      *            The item to check
      * @return If the two match
      */
-    @ParametersAreNullableByDefault
     public static boolean componentMatches(RecipeComponent<?> component, ItemStack item) {
         return component == null ? item == null || item.getType() == Material.AIR : component.matches(item);
     }

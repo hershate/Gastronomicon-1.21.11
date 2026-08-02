@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -82,8 +79,7 @@ public class WildHarvestListener implements Listener {
         return chance;
     }
 
-    @Nullable
-    @ParametersAreNonnullByDefault
+    
     public static LootTable<ItemStack> getDrops(Material dropFrom, Climate climate) {
         if (dropsByClimateByBlock.containsKey(climate) && dropsByClimateByBlock.get(climate).containsKey(dropFrom)) {
             return dropsByClimateByBlock.get(climate).get(dropFrom);
@@ -92,8 +88,8 @@ public class WildHarvestListener implements Listener {
         }
     }
 
-    @Nullable
-    public static LootTable<ItemStack> getDrops(@Nonnull EntityType dropFrom) {
+    
+    public static LootTable<ItemStack> getDrops(EntityType dropFrom) {
         return dropsByMob.getOrDefault(dropFrom, null);
     }
 

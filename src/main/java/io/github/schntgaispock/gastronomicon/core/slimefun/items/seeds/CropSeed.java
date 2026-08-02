@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -25,7 +24,6 @@ public class CropSeed extends SimpleSeed {
 
     private final @Getter Map<ItemStack, Double> grownCrops;
 
-    @ParametersAreNonnullByDefault
     public CropSeed(SlimefunItemStack item, Material displayBlock, ItemStack[] gatherSources,
             Map<ItemStack, Double> grownCrops) {
         super(item, displayBlock, gatherSources);
@@ -33,19 +31,16 @@ public class CropSeed extends SimpleSeed {
         this.grownCrops = grownCrops;
     }
 
-    @ParametersAreNonnullByDefault
     public CropSeed(SlimefunItemStack item, Material displayBlock, ItemStack[] gatherSources,
             ItemStack grownCrop) {
         this(item, displayBlock, gatherSources, CollectionUtil.toMap(grownCrop, 1.0));
     }
 
-    @ParametersAreNonnullByDefault
     public CropSeed(SlimefunItemStack item, Material displayBlock, ItemStack[] gatherSources,
             SlimefunItemStack grownCrop) {
         this(item, displayBlock, gatherSources, grownCrop.asOne());
     }
 
-    @ParametersAreNonnullByDefault
     public CropSeed(SlimefunItemStack item, Material displayBlock, SlimefunItemStack harvestSource) {
         this(item, displayBlock, RecipeUtil.singleCenter(harvestSource), harvestSource.asOne());
     }

@@ -1,7 +1,5 @@
 package io.github.schntgaispock.gastronomicon;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -108,7 +106,7 @@ public class Gastronomicon extends AbstractAddon {
         }
     }
 
-    public static NamespacedKey key(@Nonnull String name) {
+    public static NamespacedKey key(String name) {
         return new NamespacedKey(Gastronomicon.getInstance(), name);
     }
 
@@ -124,7 +122,7 @@ public class Gastronomicon extends AbstractAddon {
         return Bukkit.getScheduler().runTaskTimer(getInstance(), runnable, delay, interval);
     }
 
-    public static boolean checkPermission(Player player, @Nonnull String permissionNode, @Nullable String message) {
+    public static boolean checkPermission(Player player, String permissionNode, String message) {
         if (player.hasPermission(permissionNode)) {
             return true;
         }

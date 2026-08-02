@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
 
 import io.github.thebusybiscuit.slimefun4.libraries.commons.lang.Validate;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.Getter;
 public class Counter<T> {
 
     private Map<Integer, Pair<T, Integer>> map = new HashMap<>();
-    private final @Nullable Function<T, Integer> hashFunction;
+    private final Function<T, Integer> hashFunction;
     private Integer max;
     private Integer min;
     private @Getter int total = 0;

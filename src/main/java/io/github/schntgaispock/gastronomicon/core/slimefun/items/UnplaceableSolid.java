@@ -1,6 +1,5 @@
 package io.github.schntgaispock.gastronomicon.core.slimefun.items;
 
-import javax.annotation.Nonnull;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -26,7 +25,7 @@ public class UnplaceableSolid extends SlimefunItem {
     public void preRegister() {
         addItemHandler(new BlockPlaceHandler(false) {
             @Override
-            public void onPlayerPlace(@Nonnull BlockPlaceEvent e) {
+            public void onPlayerPlace(BlockPlaceEvent e) {
                 e.setCancelled(true);
                 BlockStorage.clearBlockInfo(e.getBlock().getLocation());
             }

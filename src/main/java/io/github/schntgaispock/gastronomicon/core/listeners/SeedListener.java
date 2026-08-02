@@ -1,6 +1,5 @@
 package io.github.schntgaispock.gastronomicon.core.listeners;
 
-import javax.annotation.Nonnull;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
@@ -31,7 +30,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 public class SeedListener implements Listener {
 
     @EventHandler
-    public void onCropGrow(@Nonnull BlockGrowEvent e) {
+    public void onCropGrow(BlockGrowEvent e) {
         switch (e.getNewState().getType()) {
             case SUGAR_CANE, CACTUS:
                 assignGastroSeed(BlockStorage.check(e.getBlock().getRelative(BlockFace.DOWN).getLocation()),
@@ -113,7 +112,7 @@ public class SeedListener implements Listener {
         }
     }
 
-    private void assignGastroSeed(SlimefunItem item, @Nonnull Location l) {
+    private void assignGastroSeed(SlimefunItem item, Location l) {
         if (item == null)
             return;
 

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -49,12 +48,12 @@ public class SimpleGastroFoodBuilder {
         return this;
     }
 
-    public SimpleGastroFoodBuilder group(@Nonnull ItemGroup group) {
+    public SimpleGastroFoodBuilder group(ItemGroup group) {
         this.group = group;
         return this;
     }
 
-    public SimpleGastroFoodBuilder item(@Nonnull SlimefunItemStack itemStack) {
+    public SimpleGastroFoodBuilder item(SlimefunItemStack itemStack) {
         this.itemStack = itemStack;
         return this;
     }
@@ -64,22 +63,22 @@ public class SimpleGastroFoodBuilder {
         return this;
     }
 
-    public SimpleGastroFoodBuilder type(@Nonnull GastroRecipeType type) {
+    public SimpleGastroFoodBuilder type(GastroRecipeType type) {
         this.recipeType = type;
         return this;
     }
 
-    public SimpleGastroFoodBuilder shape(@Nonnull RecipeShape shape) {
+    public SimpleGastroFoodBuilder shape(RecipeShape shape) {
         this.shape = shape;
         return this;
     }
 
-    public SimpleGastroFoodBuilder temperature(@Nonnull Temperature temperature) {
+    public SimpleGastroFoodBuilder temperature(Temperature temperature) {
         this.temperature = temperature;
         return this;
     }
 
-    public SimpleGastroFoodBuilder ingredients(@Nonnull Object... ingredients) {
+    public SimpleGastroFoodBuilder ingredients(Object... ingredients) {
         this.ingredients = new RecipeComponent<?>[9];
         for (int i = 0; i < Math.min(ingredients.length, 9); i++) {
             if (ingredients[i] instanceof final ItemStack stack) {
@@ -101,7 +100,7 @@ public class SimpleGastroFoodBuilder {
         return this;
     }
 
-    public SimpleGastroFoodBuilder ingredients(@Nonnull ItemStack... ingredients) {
+    public SimpleGastroFoodBuilder ingredients(ItemStack... ingredients) {
         this.ingredients = new RecipeComponent<?>[9];
         for (int i = 0; i < Math.min(ingredients.length, 9); i++) {
             this.ingredients[i] = (ingredients[i] == null || ingredients[i].getType() == Material.AIR)
@@ -112,32 +111,32 @@ public class SimpleGastroFoodBuilder {
         return this;
     }
 
-    public SimpleGastroFoodBuilder ingredients(@Nonnull RecipeComponent<?>... ingredients) {
+    public SimpleGastroFoodBuilder ingredients(RecipeComponent<?>... ingredients) {
         this.ingredients = Arrays.copyOf(ingredients, 9);
         return this;
     }
 
-    public SimpleGastroFoodBuilder container(@Nonnull ItemStack container) {
+    public SimpleGastroFoodBuilder container(ItemStack container) {
         this.container = new SingleRecipeComponent(container);
         return this;
     }
 
-    public SimpleGastroFoodBuilder container(@Nonnull SlimefunItemStack container) {
+    public SimpleGastroFoodBuilder container(SlimefunItemStack container) {
         this.container = new SingleRecipeComponent(container.asOne());
         return this;
     }
 
-    public SimpleGastroFoodBuilder container(@Nonnull RecipeComponent<?> container) {
+    public SimpleGastroFoodBuilder container(RecipeComponent<?> container) {
         this.container = container;
         return this;
     }
 
-    public SimpleGastroFoodBuilder tools(@Nonnull ItemStack... tools) {
+    public SimpleGastroFoodBuilder tools(ItemStack... tools) {
         this.tools = Set.of(tools);
         return this;
     }
 
-    public SimpleGastroFoodBuilder tools(@Nonnull SlimefunItemStack... tools) {
+    public SimpleGastroFoodBuilder tools(SlimefunItemStack... tools) {
         this.tools = Arrays.stream(tools).filter(java.util.Objects::nonNull)
             .map(SlimefunItemStack::asOne).collect(java.util.stream.Collectors.toSet());
         return this;

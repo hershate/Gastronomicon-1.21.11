@@ -2,8 +2,6 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.seeds;
 
 import java.util.logging.Level;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -26,8 +24,7 @@ public class FruitingSeed extends SimpleSeed {
 
     private final @Getter SlimefunItem fruitingBody;
 
-    @ParametersAreNonnullByDefault
-    public FruitingSeed(SlimefunItemStack item, @Nullable Material displayBlock, ItemStack[] gatherSources, String fruitingBodyId) {
+    public FruitingSeed(SlimefunItemStack item, Material displayBlock, ItemStack[] gatherSources, String fruitingBodyId) {
         super(item, displayBlock, gatherSources);
 
         if (displayBlock == null) {
@@ -42,12 +39,10 @@ public class FruitingSeed extends SimpleSeed {
         this.fruitingBody = SlimefunItem.getById(fruitingBodyId);
     }
 
-    @ParametersAreNonnullByDefault
-    public FruitingSeed(SlimefunItemStack item, @Nullable Material displayBlock, SlimefunItemStack harvestSource, String fruitingBodyId) {
+    public FruitingSeed(SlimefunItemStack item, Material displayBlock, SlimefunItemStack harvestSource, String fruitingBodyId) {
         this(item, displayBlock, RecipeUtil.singleCenter(harvestSource), fruitingBodyId);
     }
 
-    @ParametersAreNonnullByDefault
     public FruitingSeed(SlimefunItemStack item, SlimefunItemStack harvestSource, String fruitingBodyId) {
         this(item, null, RecipeUtil.singleCenter(harvestSource), fruitingBodyId);
     }

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Location;
@@ -139,7 +138,7 @@ public class ElectricKitchen extends AContainer {
         return new int[] { 42, 43 };
     }
 
-    @Nonnull
+    
     protected BlockBreakHandler onBlockBreak() {
         return new SimpleBlockBreakHandler() {
 

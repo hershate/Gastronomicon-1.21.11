@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +24,7 @@ public class ShapedGastroRecipe extends GastroRecipe {
     }
 
     public ShapedGastroRecipe(GastroRecipeType recipeType, ItemStack[] ingredients,
-        @Nullable ItemStack container, Set<ItemStack> tools, ItemStack... outputs) {
+        ItemStack container, Set<ItemStack> tools, ItemStack... outputs) {
         super(recipeType, RecipeShape.SHAPED, ingredients, null, tools, outputs);
     }
 

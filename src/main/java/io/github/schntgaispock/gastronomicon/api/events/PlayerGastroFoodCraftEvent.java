@@ -1,7 +1,5 @@
 package io.github.schntgaispock.gastronomicon.api.events;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -21,14 +19,13 @@ public class PlayerGastroFoodCraftEvent extends PlayerEvent implements Cancellab
     private final GastroRecipe recipe;
     private @Setter String message;
 
-    @ParametersAreNonnullByDefault
     public PlayerGastroFoodCraftEvent(Player player, GastroRecipe recipe) {
         super(player);
 
         this.recipe = recipe;
     }
 
-    @Nonnull
+    
     @Override
     public HandlerList getHandlers() {
         return handlerList;

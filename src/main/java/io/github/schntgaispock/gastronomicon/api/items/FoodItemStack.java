@@ -3,8 +3,6 @@ package io.github.schntgaispock.gastronomicon.api.items;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
 
@@ -29,11 +27,10 @@ public class FoodItemStack extends SlimefunItemStack {
     private final int hunger;
     private final double saturation;
     private final String texture;
-    private final @Nonnull FoodEffect[] effects;
+    private final FoodEffect[] effects;
     private final String[] perfectLore;
     private final boolean perfect;
 
-    @ParametersAreNonnullByDefault
     protected FoodItemStack(String id, String texture, String name, int hunger, double saturation, FoodEffect[] effects,
         String[] lore, String[] perfectLore, boolean perfect) {
         super(id, texture, name, lore);
@@ -47,7 +44,6 @@ public class FoodItemStack extends SlimefunItemStack {
 
     }
 
-    @ParametersAreNonnullByDefault
     protected FoodItemStack(String id, Material material, String name, int hunger, double saturation,
         FoodEffect[] effects, String[] lore, String[] perfectLore, boolean perfect) {
         super(id, material, name, lore);
@@ -60,13 +56,11 @@ public class FoodItemStack extends SlimefunItemStack {
         this.perfect = perfect;
     }
 
-    @ParametersAreNonnullByDefault
     protected FoodItemStack(String id, String texture, String name, int hunger, double saturation, FoodEffect[] effects,
         String[] lore, boolean perfect) {
         this(id, texture, name, hunger, saturation, effects, lore, lore, perfect);
     }
 
-    @ParametersAreNonnullByDefault
     protected FoodItemStack(String id, Material material, String name, int hunger, double saturation,
         FoodEffect[] effects, String[] lore, boolean perfect) {
         this(id, material, name, hunger, saturation, effects, lore, lore, perfect);
@@ -95,7 +89,6 @@ public class FoodItemStack extends SlimefunItemStack {
         return fLore.toArray(String[]::new);
     }
 
-    @ParametersAreNonnullByDefault
     public static FoodItemStack of(String id, Material material, String name, int hunger, double saturationRatio,
         FoodEffect[] effects, String[] lore, String[] perfectLore) {
             return new FoodItemStack(id, material, GastroTheme.REGULAR_FOOD.getColor() + name, hunger,
@@ -103,7 +96,6 @@ public class FoodItemStack extends SlimefunItemStack {
             getFormattedLore(false, hunger, effects, lore), getFormattedLore(true, hunger, effects, perfectLore), false);
     }
 
-    @ParametersAreNonnullByDefault
     public static FoodItemStack of(String id, String texture, String name, int hunger, double saturationRatio,
         FoodEffect[] effects, String[] lore, String[] perfectLore) {
             return new FoodItemStack(id, texture, GastroTheme.REGULAR_FOOD.getColor() + name, hunger,

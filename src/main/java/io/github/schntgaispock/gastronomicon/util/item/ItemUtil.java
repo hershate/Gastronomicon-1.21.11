@@ -2,9 +2,6 @@ package io.github.schntgaispock.gastronomicon.util.item;
 
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +26,7 @@ public class ItemUtil {
         return hash;
     }
 
-    public static int getSickleTier(@Nonnull ItemStack item) {
+    public static int getSickleTier(ItemStack item) {
         final SlimefunItem sfItem = SlimefunItem.getByItem(item);
         if (sfItem != null) {
             return switch (sfItem.getId()) {
@@ -43,15 +40,15 @@ public class ItemUtil {
         }
     }
 
-    public static boolean isSeed(@Nonnull Material material) {
+    public static boolean isSeed(Material material) {
         return switch (material) {
             case WHEAT_SEEDS, POTATO, CARROT, BEETROOT_SEEDS, PUMPKIN_SEEDS, MELON_SEEDS -> true;
             default -> false;
         };
     }
 
-    @Nonnull
-    public static Material getPlacedBlock(@Nonnull Material seed) {
+    
+    public static Material getPlacedBlock(Material seed) {
         return switch (seed) {
             case WHEAT_SEEDS -> Material.WHEAT;
             case POTATO -> Material.POTATOES;
@@ -63,7 +60,6 @@ public class ItemUtil {
         };
     }
 
-    @ParametersAreNonnullByDefault
     public static void giveItems(Player player, ItemStack... items) {
         player.getInventory().addItem(items).forEach((__, item) -> {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
@@ -93,8 +89,8 @@ public class ItemUtil {
      * 的人类可读形式（原由鬼斩前置库提供服务端中文名，移除该依赖后此处为英文回退）。
      */
     @SuppressWarnings("deprecation")
-    @Nonnull
-    public static String getDisplayName(@Nullable ItemStack stack) {
+    
+    public static String getDisplayName(ItemStack stack) {
         if (stack == null || stack.getType() == Material.AIR) {
             return "空气";
         }
@@ -115,7 +111,7 @@ public class ItemUtil {
      * @param amount
      * @param replaceConsumables
      */
-    public static Optional<Material> consumeItem(@Nonnull ItemStack item, int amount, boolean replaceConsumables) {
+    public static Optional<Material> consumeItem(ItemStack item, int amount, boolean replaceConsumables) {
         if (item.getType() != Material.AIR && item.getAmount() > 0) {
             if (replaceConsumables) {
                 switch (item.getType()) {

@@ -6,9 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -30,7 +27,7 @@ public class RecipeRegistry {
     private static final Map<ItemStack, Set<GroupRecipeComponent>> groupsByItemStack = new HashMap<>();
     private static final Map<NamespacedKey, GroupRecipeComponent> groupsById = new HashMap<>();
 
-    public static void registerRecipe(@Nonnull GastroRecipe recipe) {
+    public static void registerRecipe(GastroRecipe recipe) {
         final GastroRecipeType type = recipe.getRecipeType();
         if (recipesByType.containsKey(type)) {
             recipesByType.get(type).add(recipe);
@@ -41,13 +38,13 @@ public class RecipeRegistry {
         }
     }
 
-    public static void registerRecipes(@Nonnull GastroRecipe... recipes) {
+    public static void registerRecipes(GastroRecipe... recipes) {
         for (GastroRecipe recipe : recipes) {
             registerRecipe(recipe);
         }
     }
 
-    private static void registerGroup(@Nonnull GroupRecipeComponent group) {
+    private static void registerGroup(GroupRecipeComponent group) {
         for (final ItemStack itemStack : group.getComponent()) {
             if (groupsByItemStack.containsKey(itemStack)) {
                 groupsByItemStack.get(itemStack).add(group);
@@ -61,14 +58,14 @@ public class RecipeRegistry {
         groupsById.put(group.getId(), group);
     }
 
-    public static void registerGroups(@Nonnull GroupRecipeComponent... groups) {
+    public static void registerGroups(GroupRecipeComponent... groups) {
         for (final GroupRecipeComponent group : groups) {
             registerGroup(group);
         }
     }
 
-    @Nonnull
-    public static Set<GroupRecipeComponent> getGroups(@Nonnull ItemStack item) {
+    
+    public static Set<GroupRecipeComponent> getGroups(ItemStack item) {
         // 纯读：原先在未命中时会 put 一个空集（读副作用，且以 amount 敏感的 ItemStack 为键
         // 污染 Map）。改为返回 emptySet 单例，不修改 Map。
         final Set<GroupRecipeComponent> groups = groupsByItemStack.get(item);
@@ -76,13 +73,13 @@ public class RecipeRegistry {
 
     }
 
-    @Nullable
-    public static GroupRecipeComponent getGroupById(@Nonnull NamespacedKey name) {
+    
+    public static GroupRecipeComponent getGroupById(NamespacedKey name) {
         return groupsById.get(name);
     }
 
-    @Nonnull
-    public static Set<GastroRecipe> getRecipes(@Nonnull GastroRecipeType type) {
+    
+    public static Set<GastroRecipe> getRecipes(GastroRecipeType type) {
         // getOrDefault(type, new HashSet<>()) 的默认实参每次调用都会被求值（即使 type 存在用不到），
         // 而 getRecipes 在每次合成/每个机器 tick 调用，会造成无谓的空 HashSet 分配（GC 压力）。
         // 改为 get + null 判断，缺失时返回 emptySet 单例（零分配）。
@@ -90,7 +87,6 @@ public class RecipeRegistry {
         return recipes == null ? Collections.emptySet() : Collections.unmodifiableSet(recipes);
     }
 
-    @ParametersAreNonnullByDefault
     public static void saveRecipe(GastroRecipeType type, int hash, GastroRecipe recipe) {
         if (savedRecipes.containsKey(type)) {
             savedRecipes.get(type).put(hash, recipe);
@@ -101,7 +97,7 @@ public class RecipeRegistry {
         }
     }
 
-    @Nullable
+    
     public static GastroRecipe getSavedRecipe(GastroRecipeType type, int hash) {
         return savedRecipes.containsKey(type) ? savedRecipes.get(type).get(hash) : null;
     }

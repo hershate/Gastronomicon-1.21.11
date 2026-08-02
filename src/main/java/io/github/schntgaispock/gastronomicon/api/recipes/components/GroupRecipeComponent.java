@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -46,7 +45,7 @@ public class GroupRecipeComponent extends RecipeComponent<Set<ItemStack>> {
     }
 
     @Override
-    public boolean matches(@Nullable ItemStack item) {
+    public boolean matches(ItemStack item) {
         if (item == null) {
             return false;
         }

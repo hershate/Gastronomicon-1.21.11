@@ -2,7 +2,6 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.seeds;
 
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,7 +17,6 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 
 public abstract class AbstractSeed extends SlimefunItem {
 
-    @ParametersAreNonnullByDefault
     public AbstractSeed(SlimefunItemStack item, ItemStack[] gatherSources) {
         super(GastroGroups.RAW_INGREDIENTS, item, GastroRecipeType.BREAK, gatherSources);
     }

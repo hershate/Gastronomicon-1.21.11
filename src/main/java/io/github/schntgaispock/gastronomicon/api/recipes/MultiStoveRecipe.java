@@ -2,7 +2,6 @@ package io.github.schntgaispock.gastronomicon.api.recipes;
 
 import java.util.Set;
 
-import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -22,7 +21,7 @@ public class MultiStoveRecipe extends ShapelessGastroRecipe {
         this.temperature = temperature;
     }
 
-    public MultiStoveRecipe(ItemStack[] ingredients, @Nullable ItemStack container, Set<ItemStack> tools,
+    public MultiStoveRecipe(ItemStack[] ingredients, ItemStack container, Set<ItemStack> tools,
         Temperature temperature, ItemStack... outputs) {
         super(GastroRecipeType.MULTI_STOVE, ingredients, container, tools, outputs);
 

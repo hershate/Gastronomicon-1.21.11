@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -32,7 +31,7 @@ public class ShapelessGastroRecipe extends GastroRecipe {
     }
 
     public ShapelessGastroRecipe(GastroRecipeType recipeType, ItemStack[] ingredients,
-            @Nullable ItemStack container, Set<ItemStack> tools, ItemStack... outputs) {
+            ItemStack container, Set<ItemStack> tools, ItemStack... outputs) {
         super(recipeType, RecipeShape.SHAPELESS, ingredients, null, tools, outputs);
     }
 

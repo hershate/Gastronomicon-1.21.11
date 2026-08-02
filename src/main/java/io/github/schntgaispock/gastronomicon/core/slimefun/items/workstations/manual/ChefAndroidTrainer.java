@@ -2,7 +2,6 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.workstations.m
 
 import java.util.Arrays;
 
-import javax.annotation.Nonnull;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Material;
@@ -52,7 +51,7 @@ public class ChefAndroidTrainer extends MenuBlock {
         super(GastroGroups.BASIC_MACHINES, item, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
     }
 
-    @Nonnull
+    
     protected BlockBreakHandler onBlockBreak() {
         return new SimpleBlockBreakHandler() {
 

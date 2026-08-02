@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -292,8 +290,7 @@ public abstract class GastroWorkstation extends MenuBlock {
      */
     protected abstract boolean canCraft(BlockMenu menu, Block b, Player p, boolean sendMessage);
 
-    @Nullable
-    @ParametersAreNonnullByDefault
+    
     protected GastroRecipe findRecipe(ItemStack[] ingredients, List<ItemStack> containers, List<ItemStack> tools,
         Player player, BlockMenu menu) {
         final Set<GastroRecipe> recipes = RecipeRegistry.getRecipes(getGastroRecipeType());

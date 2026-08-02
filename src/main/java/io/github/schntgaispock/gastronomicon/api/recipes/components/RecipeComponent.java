@@ -1,6 +1,5 @@
 package io.github.schntgaispock.gastronomicon.api.recipes.components;
 
-import javax.annotation.Nullable;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +25,7 @@ public abstract class RecipeComponent<T> {
      * @param item The item to check
      * @return If the item matched
      */
-    public abstract boolean matches(@Nullable ItemStack item);
+    public abstract boolean matches(ItemStack item);
 
     /**
      * @return The item to display in the Slimefun guide
@@ -41,7 +40,7 @@ public abstract class RecipeComponent<T> {
         private final ItemStack displayItem = new ItemStack(Material.AIR);
 
         @Override
-        public boolean matches(@Nullable ItemStack item) {
+        public boolean matches(ItemStack item) {
             return (item == null) || (item.getType() == Material.AIR);
         }
 

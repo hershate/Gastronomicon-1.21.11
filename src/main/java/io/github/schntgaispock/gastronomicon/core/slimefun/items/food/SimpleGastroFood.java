@@ -3,7 +3,6 @@ package io.github.schntgaispock.gastronomicon.core.slimefun.items.food;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -43,13 +42,13 @@ public class SimpleGastroFood extends UnplaceableSolid implements RecipeDisplayI
     }
 
     @Override
-    @Nonnull
-    public String getRecipeSectionLabel(@Nonnull Player p) {
+    
+    public String getRecipeSectionLabel(Player p) {
         return StringUtil.formatColors("&7所需的工具/容器:");
     }
 
     @Override
-    @Nonnull
+    
     public List<ItemStack> getDisplayRecipes() {
         final ItemStack[] display = new ItemStack[18];
         display[0] = GastroStacks.GUIDE_TOOLS_REQUIRED;

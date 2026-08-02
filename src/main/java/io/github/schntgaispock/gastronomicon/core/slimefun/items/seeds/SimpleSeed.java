@@ -19,9 +19,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,10 +28,9 @@ import java.util.List;
  */
 public class SimpleSeed extends AbstractSeed {
 
-    private final @Nonnull @Getter Material displayBlock;
+    private final @Getter Material displayBlock;
 
-    @ParametersAreNonnullByDefault
-    public SimpleSeed(SlimefunItemStack item, @Nullable Material displayBlock, ItemStack[] gatherSources) {
+    public SimpleSeed(SlimefunItemStack item, Material displayBlock, ItemStack[] gatherSources) {
         super(item, gatherSources);
 
         if (displayBlock == null) {
@@ -44,7 +40,6 @@ public class SimpleSeed extends AbstractSeed {
         this.displayBlock = displayBlock;
     }
 
-    @ParametersAreNonnullByDefault
     public SimpleSeed(SlimefunItemStack item, ItemStack[] gatherSources) {
         this(item, null, gatherSources);
     }
@@ -82,7 +77,7 @@ public class SimpleSeed extends AbstractSeed {
         } else {
             addItemHandler(new BlockPlaceHandler(false) {
                 @Override
-                public void onPlayerPlace(@Nonnull BlockPlaceEvent e) {
+                public void onPlayerPlace(BlockPlaceEvent e) {
                     e.setCancelled(true);
                     BlockStorage.clearBlockInfo(e.getBlock().getLocation());
                 }

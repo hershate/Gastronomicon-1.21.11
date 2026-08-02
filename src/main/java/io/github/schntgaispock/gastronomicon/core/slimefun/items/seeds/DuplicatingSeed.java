@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.block.BlockState;
@@ -24,7 +23,6 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
  */
 public class DuplicatingSeed extends AbstractSeed {
 
-    @ParametersAreNonnullByDefault
     public DuplicatingSeed(SlimefunItemStack item, ItemStack[] gatherSources) {
         super(item, gatherSources);
 
@@ -34,7 +32,6 @@ public class DuplicatingSeed extends AbstractSeed {
         }
     }
 
-    @ParametersAreNonnullByDefault
     public DuplicatingSeed(SlimefunItemStack item, SlimefunItemStack harvestSource) {
         this(item, RecipeUtil.singleCenter(harvestSource));
     }

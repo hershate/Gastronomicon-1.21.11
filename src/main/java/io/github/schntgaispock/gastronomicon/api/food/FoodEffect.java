@@ -3,8 +3,6 @@ package io.github.schntgaispock.gastronomicon.api.food;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -49,9 +47,9 @@ public class FoodEffect {
     private static final double PERFECT_MULTIPLIER_VELOCITY = 1.25;
     private static final int PERFECT_BONUS_POTION_LEVEL = 1;
 
-    private final @Nonnull @Getter String description;
-    private final @Nonnull @Getter String perfectDescription;
-    private final @Nonnull BiConsumer<Player, Boolean> application;
+    private final @Getter String description;
+    private final @Getter String perfectDescription;
+    private final BiConsumer<Player, Boolean> application;
 
     public FoodEffect(String description, BiConsumer<Player, Boolean> application) {
         this(description, description, application);
@@ -66,8 +64,7 @@ public class FoodEffect {
      *            The chance to activate, [0 ... 1]
      * @return A FoodEffect that has a chance of activating
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect chanceOf(FoodEffect effect, double chance) {
         final double pc = chance * PERFECT_MULTIPLIER_CHANCE;
         return new FoodEffect(effect.getDescription() + " &8(" + NumberUtil.roundToPercent(chance, 4) + "%)",
@@ -87,8 +84,7 @@ public class FoodEffect {
      *            If it is lower than 1, it will be set to 1
      * @return A FoodEffect that heals the player for {@code health} health.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect heal(int health) {
         final int h = Math.max(health, 1);
         final int ph = (int) Math.ceil(h * PERFECT_MULTIPLIER_HEALTH);
@@ -98,8 +94,7 @@ public class FoodEffect {
         });
     }
 
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     private static FoodEffect potionEffect(String color, PotionEffectType effectType, int durationSeconds,
         int amplifier,
         boolean ambience, boolean particles, boolean icon) {
@@ -134,8 +129,7 @@ public class FoodEffect {
      *            See {@link PotionEffect#hasIcon}
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect positivePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier,
         boolean ambience, boolean particles, boolean icon) {
         return potionEffect("&9", effectType, durationSeconds, amplifier, ambience, particles, icon);
@@ -157,8 +151,7 @@ public class FoodEffect {
      *            See {@link PotionEffect#hasParticles}
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect positivePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier,
         boolean ambience, boolean particles) {
         return positivePotionEffect(effectType, durationSeconds, amplifier, ambience, particles, particles);
@@ -178,8 +171,7 @@ public class FoodEffect {
      *            See {@link PotionEffect#isAmbient}
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect positivePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier,
         boolean ambience) {
         return positivePotionEffect(effectType, durationSeconds, amplifier, ambience, true);
@@ -197,8 +189,7 @@ public class FoodEffect {
      *            The strength of the effect (0 -> I, 1 -> II, etc.)
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect positivePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier) {
         return positivePotionEffect(effectType, durationSeconds, amplifier, true);
     }
@@ -214,8 +205,7 @@ public class FoodEffect {
      * @return A FoodEffect that applies a potion effect to the player. Has an
      *         amplifier of 0 (I)
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect positivePotionEffect(PotionEffectType effectType, int durationSeconds) {
         return positivePotionEffect(effectType, durationSeconds, 0);
     }
@@ -228,8 +218,7 @@ public class FoodEffect {
      *            The effect to apply
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect positivePotionEffect(PotionEffect effect) {
         return positivePotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier(), effect.isAmbient(),
             effect.hasParticles(), effect.hasIcon());
@@ -253,8 +242,7 @@ public class FoodEffect {
      *            See {@link PotionEffect#hasIcon}
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect negativePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier,
         boolean ambience, boolean particles, boolean icon) {
         return potionEffect("&c", effectType, durationSeconds, amplifier, ambience, particles, icon);
@@ -276,8 +264,7 @@ public class FoodEffect {
      *            See {@link PotionEffect#hasParticles}
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect negativePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier,
         boolean ambience, boolean particles) {
         return negativePotionEffect(effectType, durationSeconds, amplifier, ambience, particles, particles);
@@ -297,8 +284,7 @@ public class FoodEffect {
      *            See {@link PotionEffect#isAmbient}
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect negativePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier,
         boolean ambience) {
         return negativePotionEffect(effectType, durationSeconds, amplifier, ambience, true);
@@ -316,8 +302,7 @@ public class FoodEffect {
      *            The strength of the effect (0 -> I, 1 -> II, etc.)
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect negativePotionEffect(PotionEffectType effectType, int durationSeconds, int amplifier) {
         return negativePotionEffect(effectType, durationSeconds, amplifier, true);
     }
@@ -333,8 +318,7 @@ public class FoodEffect {
      * @return A FoodEffect that applies a potion effect to the player. Has an
      *         amplifier of 0 (I)
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect negativePotionEffect(PotionEffectType effectType, int durationSeconds) {
         return negativePotionEffect(effectType, durationSeconds, 0);
     }
@@ -347,8 +331,7 @@ public class FoodEffect {
      *            The effect to apply
      * @return A FoodEffect that applies a potion effect to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect negativePotionEffect(PotionEffect effect) {
         return negativePotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier(), effect.isAmbient(),
             effect.hasParticles(), effect.hasIcon());
@@ -363,8 +346,7 @@ public class FoodEffect {
      * @return A FoodEffect that removes the specified potion effect from the
      *         player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect removePotionEffect(PotionEffectType type) {
         final String desc = "&b清除 " + ItemUtil.getPotionName(type) + " 药水效果";
         return new FoodEffect(desc, desc, (Player player, Boolean isPerfect) -> {
@@ -379,7 +361,7 @@ public class FoodEffect {
      *            The amount of xp to give
      * @return A FoodEffect that gives the specified amount of xp to the player.
      */
-    @Nonnull
+    
     public static FoodEffect xp(int xp) {
         final int x = Math.max(xp, 1);
         final int px = (int) Math.ceil(x * PERFECT_MULTIPLIER_XP);
@@ -411,8 +393,7 @@ public class FoodEffect {
      *            The amount to give
      * @return A FoodEffect that gives the specified item to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect giveItem(ItemStack item, int amount) {
         // 与 heal/xp/air/warm 等工厂一致地钳制到 >=1：amount<0 时 setAmount 会抛
         // IllegalArgumentException（Bukkit）。
@@ -429,8 +410,7 @@ public class FoodEffect {
      *            The item to give
      * @return A FoodEffect that gives the specified item to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect giveItem(ItemStack item) {
         return _giveItem(item.clone());
     }
@@ -444,8 +424,7 @@ public class FoodEffect {
      *            The amount to give
      * @return A FoodEffect that gives the specified item to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect giveItem(Material material, int amount) {
         return _giveItem(new ItemStack(material, Math.max(amount, 1)));
     }
@@ -457,8 +436,7 @@ public class FoodEffect {
      *            The type of item to give
      * @return A FoodEffect that gives the specified item to the player.
      */
-    @Nonnull
-    @ParametersAreNonnullByDefault
+    
     public static FoodEffect giveItem(Material material) {
         return _giveItem(new ItemStack(material));
     }
@@ -472,7 +450,7 @@ public class FoodEffect {
      *            The amount to give
      * @return A FoodEffect that gives the specified Slimefun item to the player.
      */
-    public static FoodEffect giveSlimefunItem(@Nonnull String id, int amount) {
+    public static FoodEffect giveSlimefunItem(String id, int amount) {
         final SlimefunItem sfItem = SlimefunItem.getById(id);
         if (sfItem == null) {
             Gastronomicon.log(Level.WARNING, "无法创建给予粘液物品 \"" + id + "\" 的 FoodEffect 因为物品不存在!"
@@ -489,7 +467,7 @@ public class FoodEffect {
      *            The id of the item to give
      * @return A FoodEffect that gives the specified Slimefun item to the player.
      */
-    public static FoodEffect giveSlimefunItem(@Nonnull String id) {
+    public static FoodEffect giveSlimefunItem(String id) {
         final SlimefunItem sfItem = SlimefunItem.getById(id);
         if (sfItem == null) {
             Gastronomicon.log(Level.WARNING, "无法创建给予粘液物品 \"" + id + "\" 的 FoodEffect 因为物品不存在!"

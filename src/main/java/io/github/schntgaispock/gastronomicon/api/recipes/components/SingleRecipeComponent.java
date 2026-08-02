@@ -1,6 +1,5 @@
 package io.github.schntgaispock.gastronomicon.api.recipes.components;
 
-import javax.annotation.Nullable;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +26,7 @@ public class SingleRecipeComponent extends RecipeComponent<ItemStack> {
 
     // SingleRecipeComponents do not have to deal with group components in recipes
     @Override
-    public boolean matches(@Nullable ItemStack item) {
+    public boolean matches(ItemStack item) {
         if (item == null) {
             return component.getType() == Material.AIR;
         } else {
