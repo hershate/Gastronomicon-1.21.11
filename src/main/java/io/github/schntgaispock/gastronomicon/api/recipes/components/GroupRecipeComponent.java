@@ -44,18 +44,43 @@ public class GroupRecipeComponent extends RecipeComponent<Set<ItemStack>> {
         this(id, Set.of(Arrays.stream(component).map(material -> new ItemStack(material)).toArray(ItemStack[]::new)));
     }
 
+    // [perf] 缓存组内每个不可变模板的 SlimefunItem 解析 + 展开为数组。
+    // 原实现每次 matches() 对组内每个元素调 getByItem；组在注册后不可变，解析恒定。
+    // 数组索引遍历比 Set 迭代器更快，且消除重复 getByItem。toArray(component) 保留 Set 迭代顺序，
+    // 故「命中首个即返回」的结果与原实现逐元素顺序一致。可见性/竞争同 SingleRecipeComponent。
+    private volatile ItemStack[] groupItemsCache;
+    private volatile SlimefunItem[] groupSfCache;
+    private volatile boolean groupResolved;
+
+    private void ensureGroupResolved() {
+        if (groupResolved) {
+            return;
+        }
+        final ItemStack[] items = component.toArray(ItemStack[]::new);
+        final SlimefunItem[] sfs = new SlimefunItem[items.length];
+        for (int i = 0; i < items.length; i++) {
+            sfs[i] = SlimefunItem.getByItem(items[i]);
+        }
+        groupItemsCache = items;
+        groupSfCache = sfs;
+        groupResolved = true;
+    }
+
     @Override
     public boolean matches(ItemStack item) {
         if (item == null) {
             return false;
         }
-        for (final ItemStack groupItem : component) {
-            final SlimefunItem sfGroupItem = SlimefunItem.getByItem(groupItem);
+        ensureGroupResolved();
+        final ItemStack[] items = groupItemsCache;
+        final SlimefunItem[] sfs = groupSfCache;
+        for (int i = 0; i < items.length; i++) {
+            final SlimefunItem sfGroupItem = sfs[i];
             if (sfGroupItem != null) {
                 if (sfGroupItem.isItem(item)) {
                     return true;
                 }
-            } else if (item.isSimilar(groupItem)) {
+            } else if (item.isSimilar(items[i])) {
                 return true;
             }
         }
