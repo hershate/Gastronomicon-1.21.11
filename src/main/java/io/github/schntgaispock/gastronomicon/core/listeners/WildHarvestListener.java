@@ -56,8 +56,10 @@ public class WildHarvestListener implements Listener {
     }
 
     private double getDropChance(Material mat) {
-        if (blockDropChanceCache.containsKey(mat)) {
-            return blockDropChanceCache.get(mat);
+        // [perf] containsKey+get 两次查找 -> 单次 get
+        final Double cached = blockDropChanceCache.get(mat);
+        if (cached != null) {
+            return cached;
         }
 
         final double chance = Gastronomicon.getInstance()
@@ -68,8 +70,9 @@ public class WildHarvestListener implements Listener {
     }
 
     private double getDropChance(EntityType entity) {
-        if (mobDropChanceCache.containsKey(entity)) {
-            return mobDropChanceCache.get(entity);
+        final Double cached = mobDropChanceCache.get(entity);
+        if (cached != null) {
+            return cached;
         }
 
         final double chance = Gastronomicon.getInstance()
@@ -79,13 +82,17 @@ public class WildHarvestListener implements Listener {
         return chance;
     }
 
-    
+
     public static LootTable<ItemStack> getDrops(Material dropFrom, Climate climate) {
-        if (dropsByClimateByBlock.containsKey(climate) && dropsByClimateByBlock.get(climate).containsKey(dropFrom)) {
-            return dropsByClimateByBlock.get(climate).get(dropFrom);
-        } else {
-            return dropsByBlock.getOrDefault(dropFrom, null);
+        // [perf] 原 containsKey+get 链对 climate 最多 3 次 map 查找 -> 每层单次 get
+        final Map<Material, LootTable<ItemStack>> climateDrops = dropsByClimateByBlock.get(climate);
+        if (climateDrops != null) {
+            final LootTable<ItemStack> t = climateDrops.get(dropFrom);
+            if (t != null) {
+                return t;
+            }
         }
+        return dropsByBlock.get(dropFrom);
     }
 
     

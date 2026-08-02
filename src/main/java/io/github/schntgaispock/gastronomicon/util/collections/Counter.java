@@ -37,9 +37,14 @@ public class Counter<T> {
     public void add(T item, int amount) {
         Validate.isTrue(amount > 0, "amount must be greater than zero");
         final int hash = hash(item);
-        if (map.containsKey(hash)) {
-            set(hash, get(hash) + amount);
+        // [perf] 原 containsKey + set(get()+amount) 共 4 次 map 查找；改为单次 get 后原地改 Pair。
+        final Pair<T, Integer> existing = map.get(hash);
+        final int newValue;
+        if (existing != null) {
+            newValue = existing.second() + amount;
+            existing.second(newValue);
         } else {
+            newValue = amount;
             map.put(hash, new Pair<>(item, amount));
         }
 
@@ -47,7 +52,7 @@ public class Counter<T> {
             Pair<Integer, Integer> maxMin = findMaxMin();
             max = maxMin.first();
             min = maxMin.second();
-        } else if (get(hash) >= max().second()) {
+        } else if (newValue >= max().second()) {
             max = hash;
         }
 
@@ -60,23 +65,25 @@ public class Counter<T> {
 
     private void sub(int hash, int amount) {
         Validate.isTrue(amount > 0, "amount must be greater than zero");
-        if (!map.containsKey(hash)) {
+        final Pair<T, Integer> p = map.get(hash);
+        if (p == null) {
             return;
         }
-
-        if (get(hash) <= amount) {
+        final int cur = p.second();
+        if (cur <= amount) {
             remove(hash);
         } else {
-            set(hash, get(hash) - amount);
+            final int newVal = cur - amount;
+            p.second(newVal);
 
             if (max == hash || max == null) {
                 Pair<Integer, Integer> maxMin = findMaxMin();
                 max = maxMin.first();
                 min = maxMin.second();
-            } else if (get(hash) <= min().second()) {
+            } else if (newVal <= min().second()) {
                 min = hash;
-            } 
-            
+            }
+
             total -= amount;
         }
     }
@@ -90,16 +97,12 @@ public class Counter<T> {
     }
 
     private int get(Integer hash) {
-        return map.containsKey(hash) ? map.get(hash).second() : 0;
+        final Pair<T, Integer> p = map.get(hash);
+        return p == null ? 0 : p.second();
     }
 
     public int get(T item) {
         return get(hash(item));
-    }
-
-    private void set(int hash, int amount) {
-        Validate.isTrue(amount > 0, "amount must be greater than zero");
-        map.get(hash).second(amount);
     }
 
     private void remove(int hash) {

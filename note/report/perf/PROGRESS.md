@@ -40,7 +40,8 @@
 | 2 | LootTable.generate（数组索引 + 整数随机 + 满桶跳过） | ✅ | [02-loottable-generate.md](02-loottable-generate.md) |
 | 3 | NumberUtil/FoodEffect 数学与分配清理（含 teleport Math.pow 循环不变量） | ✅ | [03-numberutil-food-math.md](03-numberutil-food-math.md) |
 | 4 | 合成路径分配（stream→loop）+ ElectricKitchen getInputSlots 复用 | ✅ | [04-craft-path-allocations.md](04-craft-path-allocations.md) |
-| 5 | 监听器路径 / Counter 评估 / ElectricKitchen 哈希缓存(需服务端验证) | ⏳ | — |
+| 5 | Counter.add 查找 4→1 + WildHarvest map 查找去重 | ✅ | [05-counter-listener-lookups.md](05-counter-listener-lookups.md) |
+| 6 | 巡检剩余路径（发酵/磨坊/冰箱/树木/种子 ticker 等）→ 收口 | ⏳ | — |
 
 > ⏳进行中 ⏸待办 ✅完成 ❌放弃（注明原因）
 
